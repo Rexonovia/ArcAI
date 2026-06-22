@@ -1,0 +1,393 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Learning Paths - SystemArchitect AI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-primary-container": "#dad7ff",
+                      "surface-tint": "#c3c0ff",
+                      "surface-container-low": "#1b1b24",
+                      "on-tertiary": "#490080",
+                      "on-secondary": "#00344d",
+                      "inverse-surface": "#e4e1ee",
+                      "on-tertiary-fixed": "#2c0051",
+                      "inverse-on-surface": "#302f39",
+                      "primary-fixed": "#e2dfff",
+                      "background": "#13121b",
+                      "error": "#ffb4ab",
+                      "surface-container-highest": "#35343e",
+                      "inverse-primary": "#4d44e3",
+                      "error-container": "#93000a",
+                      "surface-container-lowest": "#0e0d16",
+                      "on-secondary-fixed": "#001e2f",
+                      "on-surface-variant": "#c7c4d8",
+                      "surface-container-high": "#2a2933",
+                      "on-secondary-container": "#00344e",
+                      "primary-fixed-dim": "#c3c0ff",
+                      "surface-dim": "#13121b",
+                      "on-primary-fixed-variant": "#3323cc",
+                      "on-primary": "#1d00a5",
+                      "secondary": "#89ceff",
+                      "on-error": "#690005",
+                      "surface": "#13121b",
+                      "tertiary-fixed": "#f0dbff",
+                      "on-error-container": "#ffdad6",
+                      "secondary-container": "#00a2e6",
+                      "secondary-fixed": "#c9e6ff",
+                      "outline": "#918fa1",
+                      "primary-container": "#4f46e5",
+                      "surface-bright": "#393842",
+                      "on-tertiary-container": "#ebd2ff",
+                      "on-primary-fixed": "#0f0069",
+                      "on-tertiary-fixed-variant": "#6900b3",
+                      "primary": "#c3c0ff",
+                      "outline-variant": "#464555",
+                      "secondary-fixed-dim": "#89ceff",
+                      "on-secondary-fixed-variant": "#004c6e",
+                      "on-background": "#e4e1ee",
+                      "tertiary": "#ddb7ff",
+                      "tertiary-container": "#862dd4",
+                      "on-surface": "#e4e1ee",
+                      "tertiary-fixed-dim": "#ddb7ff",
+                      "surface-container": "#1f1f28",
+                      "surface-variant": "#35343e"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "base": "4px",
+                      "sm": "1rem",
+                      "md": "1.5rem",
+                      "xl": "4rem",
+                      "gutter": "24px",
+                      "xs": "0.5rem",
+                      "lg": "2.5rem",
+                      "margin": "32px"
+              },
+              "fontFamily": {
+                      "headline-display": ["Inter"],
+                      "label-md": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "body-md": ["Inter"],
+                      "code-sm": ["JetBrains Mono"]
+              },
+              "fontSize": {
+                      "headline-display": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "800"}],
+                      "label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                      "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-lg": ["18px", {"lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400"}],
+                      "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "headline-md": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400"}],
+                      "code-sm": ["13px", {"lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400"}]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-card:hover {
+            border-color: #89ceff;
+        }
+        .glow-accent {
+            box-shadow: 0 0 30px rgba(195, 192, 255, 0.15);
+        }
+        .data-flow-line {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00a2e6, transparent);
+            background-size: 200% 100%;
+            animation: dataFlow 3s infinite linear;
+        }
+        @keyframes dataFlow {
+            0% { background-position: 100% 0; }
+            100% { background-position: -100% 0; }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen flex">
+<!-- SideNavBar (Hidden on Mobile) -->
+<nav class="hidden md:flex flex-col gap-base bg-surface-container-low border-r border-white/10 h-screen w-64 left-0 top-0 pt-20 px-4 fixed z-40">
+<div class="mb-8 px-2">
+<div class="font-headline-md text-headline-md text-primary mb-1">Learning Path</div>
+<div class="font-body-md text-body-md text-on-surface-variant">Distributed Systems</div>
+</div>
+<a class="flex items-center gap-3 py-2 px-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg mx-2 transition-colors cursor-pointer group" href="#">
+<span class="material-symbols-outlined text-outline group-hover:text-on-surface">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 py-2 px-3 bg-primary-container text-on-primary-container rounded-lg mx-2 transition-colors cursor-pointer group" href="#">
+<span class="material-symbols-outlined text-primary group-hover:text-on-surface">school</span>
+<span class="font-label-md text-label-md">Modules</span>
+</a>
+<a class="flex items-center gap-3 py-2 px-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg mx-2 transition-colors cursor-pointer group" href="#">
+<span class="material-symbols-outlined text-outline group-hover:text-on-surface">smart_toy</span>
+<span class="font-label-md text-label-md">AI Tutor</span>
+</a>
+<a class="flex items-center gap-3 py-2 px-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg mx-2 transition-colors cursor-pointer group" href="#">
+<span class="material-symbols-outlined text-outline group-hover:text-on-surface">history</span>
+<span class="font-label-md text-label-md">History</span>
+</a>
+<a class="flex items-center gap-3 py-2 px-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg mx-2 transition-colors cursor-pointer group" href="#">
+<span class="material-symbols-outlined text-outline group-hover:text-on-surface">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+<div class="mt-auto mb-8 mx-2">
+<button class="w-full py-2 bg-gradient-to-r from-primary-container to-secondary-container text-white font-label-md text-label-md rounded-lg hover:opacity-90 transition-opacity">Upgrade to Pro</button>
+</div>
+</nav>
+<!-- TopNavBar (Mobile Only) -->
+<header class="md:hidden bg-surface/60 backdrop-blur-xl border-b border-white/10 shadow-sm fixed top-0 w-full z-50">
+<div class="flex justify-between items-center px-gutter py-sm max-w-full mx-auto">
+<div class="font-headline-md text-headline-md font-extrabold text-primary">SystemArchitect AI</div>
+<button class="text-on-surface-variant hover:text-on-surface transition-colors active:scale-95 transition-transform">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 md:ml-64 pt-24 md:pt-12 px-gutter md:px-margin pb-20 md:pb-32 overflow-y-auto">
+<!-- Top Stats Row -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md mb-xl">
+<!-- Streak Stat -->
+<div class="glass-card rounded-xl p-md flex items-center justify-between glow-accent">
+<div>
+<h3 class="font-label-md text-label-md text-outline uppercase tracking-widest mb-1">Learning Streak</h3>
+<div class="flex items-end gap-2">
+<span class="font-headline-display text-headline-display text-primary">14</span>
+<span class="font-body-md text-body-md text-on-surface-variant mb-2">Days</span>
+</div>
+</div>
+<div class="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center border border-primary/20 relative">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: &quot;FILL&quot; 1;">local_fire_department</span>
+<div class="absolute inset-0 rounded-full border-2 border-primary border-t-transparent animate-spin" style="animation-duration: 3s;"></div>
+</div>
+</div>
+<!-- Mastered Concepts Stat -->
+<div class="glass-card rounded-xl p-md flex items-center justify-between">
+<div>
+<h3 class="font-label-md text-label-md text-outline uppercase tracking-widest mb-1">Mastered Concepts</h3>
+<div class="flex items-end gap-2">
+<span class="font-headline-display text-headline-display text-secondary">32</span>
+<span class="font-body-md text-body-md text-on-surface-variant mb-2">Topics</span>
+</div>
+</div>
+<div class="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center border border-secondary/20">
+<span class="material-symbols-outlined text-secondary text-3xl" style="font-variation-settings: &quot;FILL&quot; 1;">workspace_premium</span>
+</div>
+</div>
+<!-- Total XP Stat -->
+<div class="glass-card rounded-xl p-md flex items-center justify-between">
+<div>
+<h3 class="font-label-md text-label-md text-outline uppercase tracking-widest mb-1">Total Experience</h3>
+<div class="flex items-end gap-2">
+<span class="font-headline-display text-headline-display text-tertiary">4,250</span>
+<span class="font-body-md text-body-md text-on-surface-variant mb-2">XP</span>
+</div>
+</div>
+<div class="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center border border-tertiary/20">
+<span class="material-symbols-outlined text-tertiary text-3xl" style="font-variation-settings: &quot;FILL&quot; 1;">military_tech</span>
+</div>
+</div>
+</div>
+<!-- Section Header -->
+<div class="mb-8">
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-2">Select Your Path</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">Choose a tailored curriculum designed to accelerate your architectural mastery. Each track provides interactive nodes, AI-driven assessments, and practical case studies.</p>
+</div>
+<!-- Course Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<!-- Beginner Track Card -->
+<div class="glass-card rounded-xl overflow-hidden group flex flex-col h-full relative">
+<div class="h-32 bg-surface-container-high relative overflow-hidden flex-shrink-0">
+<div class="absolute inset-0 opacity-30" style="background-image: radial-gradient(circle at 50% 50%, rgba(195, 192, 255, 0.4) 0%, transparent 70%);"></div>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-5xl text-primary opacity-80 group-hover:scale-110 transition-transform duration-500">architecture</span>
+</div>
+</div>
+<div class="p-4 flex-1 flex flex-col">
+<div class="flex justify-between items-start mb-3">
+<span class="px-2 py-0.5 bg-surface-container-highest/50 rounded-full border border-primary/20 font-code-sm text-code-sm text-primary flex items-center gap-1">
+                Beginner
+            </span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-2">Fundamentals Track</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4 text-sm">Core concepts of distributed systems. Learn about client-server models, load balancing, and scaling.</p>
+<div class="space-y-3 mb-6">
+<div>
+<div class="flex justify-between font-label-md text-xs mb-1">
+<span class="text-outline">Client-Server</span>
+<span class="text-primary">100%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 100%;"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between font-label-md text-xs mb-1">
+<span class="text-outline">Load Balancing</span>
+<span class="text-primary">60%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 60%;"></div>
+</div>
+</div>
+</div>
+<div class="mt-auto">
+<button class="w-full py-2 bg-primary-container hover:bg-primary-container/80 text-on-primary-container font-label-md text-label-md rounded-lg transition-colors">Continue</button>
+</div>
+</div>
+</div>
+<!-- PM Track Card -->
+<div class="glass-card rounded-xl overflow-hidden group flex flex-col h-full glow-accent border-secondary/30 relative">
+<div class="absolute top-4 right-4 z-10 w-2 h-2 rounded-full bg-secondary shadow-[0_0_10px_#00a2e6] animate-pulse"></div>
+<div class="h-32 bg-surface-container-high relative overflow-hidden flex-shrink-0">
+<div class="absolute inset-0 opacity-30" style="background-image: radial-gradient(circle at 50% 50%, rgba(137, 206, 255, 0.4) 0%, transparent 70%);"></div>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-5xl text-secondary opacity-80 group-hover:scale-110 transition-transform duration-500">balance</span>
+</div>
+</div>
+<div class="p-4 flex-1 flex flex-col">
+<div class="flex justify-between items-start mb-3">
+<span class="px-2 py-0.5 bg-surface-container-highest/50 rounded-full border border-secondary/20 font-code-sm text-code-sm text-secondary flex items-center gap-1">
+                Intermediate
+            </span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-2">Product Manager Track</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4 text-sm">Master scalability tradeoffs and reliability metrics based on business constraints.</p>
+<div class="space-y-3 mb-6">
+<div>
+<div class="flex justify-between font-label-md text-xs mb-1">
+<span class="text-outline">Tradeoffs</span>
+<span class="text-secondary">80%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-secondary rounded-full" style="width: 80%;"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between font-label-md text-xs mb-1">
+<span class="text-outline">Metrics</span>
+<span class="text-secondary">10%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-secondary rounded-full" style="width: 10%;"></div>
+</div>
+</div>
+</div>
+<div class="mt-auto">
+<button class="w-full py-2 bg-secondary-container hover:bg-secondary-container/80 text-white font-label-md text-label-md rounded-lg transition-colors">Continue</button>
+</div>
+</div>
+</div>
+<!-- Founder Track Card -->
+<div class="glass-card rounded-xl overflow-hidden group flex flex-col h-full relative">
+<div class="h-32 bg-surface-container-high relative overflow-hidden flex-shrink-0">
+<div class="absolute inset-0 opacity-30" style="background-image: radial-gradient(circle at 50% 50%, rgba(221, 183, 255, 0.4) 0%, transparent 70%);"></div>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-5xl text-tertiary opacity-80 group-hover:scale-110 transition-transform duration-500">rocket_launch</span>
+</div>
+</div>
+<div class="p-4 flex-1 flex flex-col">
+<div class="flex justify-between items-start mb-3">
+<span class="px-2 py-0.5 bg-surface-container-highest/50 rounded-full border border-tertiary/20 font-code-sm text-code-sm text-tertiary flex items-center gap-1">
+                Advanced
+            </span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-2">Startup Founder Track</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4 text-sm">From MVP to hyper-growth. Learn cost-effective cloud deployments and handling viral spikes.</p>
+<div class="space-y-3 mb-6">
+<div>
+<div class="flex justify-between font-label-md text-xs mb-1">
+<span class="text-outline">MVP Architecture</span>
+<span class="text-tertiary">0%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-tertiary rounded-full opacity-50" style="width: 0%;"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between font-label-md text-xs mb-1">
+<span class="text-outline">Cloud Deployments</span>
+<span class="text-tertiary">0%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-tertiary rounded-full opacity-50" style="width: 0%;"></div>
+</div>
+</div>
+</div>
+<div class="mt-auto">
+<button class="w-full py-2 bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-md text-label-md rounded-lg transition-colors border border-outline-variant">Start Track</button>
+</div>
+</div>
+</div>
+<!-- Interview Prep Card -->
+<div class="glass-card rounded-xl overflow-hidden group flex flex-col h-full relative">
+<div class="h-32 bg-surface-container-high relative overflow-hidden flex-shrink-0">
+<div class="absolute inset-0 opacity-30" style="background-image: radial-gradient(circle at 50% 50%, rgba(226, 223, 255, 0.4) 0%, transparent 70%);"></div>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-5xl text-primary-fixed opacity-80 group-hover:scale-110 transition-transform duration-500">terminal</span>
+</div>
+</div>
+<div class="p-4 flex-1 flex flex-col">
+<div class="flex justify-between items-start mb-3">
+<span class="px-2 py-0.5 bg-surface-container-highest/50 rounded-full border border-primary-fixed/20 font-code-sm text-code-sm text-primary-fixed flex items-center gap-1">
+                Expert
+            </span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-2">Interview Prep Track</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4 text-sm">System design interviews for FAANG. Tackle complex, open-ended architectural challenges.</p>
+<div class="space-y-3 mb-6">
+<div>
+<div class="flex justify-between font-label-md text-xs mb-1">
+<span class="text-outline">Data Modeling</span>
+<span class="text-primary-fixed">0%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary-fixed rounded-full opacity-50" style="width: 0%;"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between font-label-md text-xs mb-1">
+<span class="text-outline">API Design</span>
+<span class="text-primary-fixed">0%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary-fixed rounded-full opacity-50" style="width: 0%;"></div>
+</div>
+</div>
+</div>
+<div class="mt-auto">
+<button class="w-full py-2 bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-md text-label-md rounded-lg transition-colors border border-outline-variant">Start Track</button>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-xl">
+<div class="data-flow-line w-full mb-8"></div>
+</div>
+</main>
+<!-- Footer -->
+
+
+
+</body></html>

@@ -80,7 +80,7 @@ export default function PlaygroundPage() {
       const y = e.clientY - rect.top - 40;  // adjust for center of node (~80 height)
       
       const newNode: ArchitectureNode = {
-        id: \`n_\${Date.now()}\`,
+        id: `n_${Date.now()}`,
         type: item.type,
         label: item.label,
         icon: item.icon,
@@ -159,7 +159,7 @@ export default function PlaygroundPage() {
       const cp2X = startX + (endX - startX) / 2;
       const cp2Y = endY;
       
-      const pathData = \`M \${startX} \${startY} C \${cp1X} \${cp1Y}, \${cp2X} \${cp2Y}, \${endX} \${endY}\`;
+      const pathData = `M ${startX} ${startY} C ${cp1X} ${cp1Y}, ${cp2X} ${cp2Y}, ${endX} ${endY}`;
 
       return (
         <svg key={conn.id} className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 0 }}>
@@ -228,11 +228,11 @@ export default function PlaygroundPage() {
           {nodes.map(node => (
             <div
               key={node.id}
-              className={\`absolute flex flex-col w-[160px] rounded-lg border-2 cursor-grab active:cursor-grabbing glass-panel transition-shadow duration-200 \${
+              className={`absolute flex flex-col w-[160px] rounded-lg border-2 cursor-grab active:cursor-grabbing glass-panel transition-shadow duration-200 ${
                 selectedNodeId === node.id ? 'border-primary shadow-[0_0_15px_rgba(195,192,255,0.3)] z-30' : 'border-outline-variant z-10'
-              } \${node.status === 'warning' ? 'pulse-node border-[var(--color-tertiary)]' : node.status === 'error' ? 'pulse-node border-error' : ''}\`}
+              } ${node.status === 'warning' ? 'pulse-node border-[var(--color-tertiary)]' : node.status === 'error' ? 'pulse-node border-error' : ''}`}
               style={{
-                transform: \`translate(\${node.position.x}px, \${node.position.y}px)\`,
+                transform: `translate(${node.position.x}px, ${node.position.y}px)`,
                 backgroundColor: 'var(--color-surface-container-high)',
               }}
               onPointerDown={(e) => handleNodePointerDown(e, node.id)}
@@ -246,14 +246,14 @@ export default function PlaygroundPage() {
             >
               {/* Node Header */}
               <div className="flex items-center gap-2 p-2 border-b border-outline-variant bg-surface-container-highest rounded-t-md">
-                <span className={\`material-symbols-outlined text-lg \${
+                <span className={`material-symbols-outlined text-lg ${
                   node.status === 'error' ? 'text-error' : node.status === 'warning' ? 'text-[var(--color-tertiary)]' : 'text-primary'
-                }\`}>
+                }`}>
                   {node.icon}
                 </span>
                 <span className="text-xs font-semibold truncate flex-1">{node.label}</span>
                 {node.status !== 'healthy' && (
-                  <span className={\`material-symbols-outlined text-sm \${node.status === 'error' ? 'text-error' : 'text-[var(--color-tertiary)]'}\`}>
+                  <span className={`material-symbols-outlined text-sm ${node.status === 'error' ? 'text-error' : 'text-[var(--color-tertiary)]'}`}>
                     warning
                   </span>
                 )}
@@ -306,7 +306,7 @@ export default function PlaygroundPage() {
                 Current simulation shows potential bottlenecks in the <strong>Auth Service</strong> if traffic exceeds 800 RPS.
               </p>
               <div className="w-full bg-surface-container-highest rounded-full h-1.5 mb-1 overflow-hidden">
-                <div className="bg-secondary h-full rounded-full transition-all duration-300" style={{ width: \`\${trafficVolume}%\` }}></div>
+                <div className="bg-secondary h-full rounded-full transition-all duration-300" style={{ width: `${trafficVolume}%` }}></div>
               </div>
               <div className="flex justify-between text-[10px] text-outline">
                 <span>0 RPS</span>
@@ -373,7 +373,7 @@ export default function PlaygroundPage() {
             <div className="bg-surface-container rounded border border-outline-variant p-3 flex flex-col justify-center">
               <span className="text-xs text-outline mb-1 font-medium">ERROR RATE</span>
               <div className="flex items-end gap-2">
-                <span className={\`text-2xl font-mono \${trafficVolume > 80 ? 'text-error' : 'text-on-surface'}\`}>
+                <span className={`text-2xl font-mono ${trafficVolume > 80 ? 'text-error' : 'text-on-surface'}`}>
                   {(0.02 + (trafficVolume > 80 ? (trafficVolume - 80) * 0.1 : 0)).toFixed(2)}
                 </span>
                 <span className="text-xs text-on-surface-variant mb-1">%</span>

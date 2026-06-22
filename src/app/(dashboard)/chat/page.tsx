@@ -100,30 +100,30 @@ export default function ChatPage() {
             {sampleMessages.map((msg) => (
               <div
                 key={msg.id}
-                className={\`flex gap-4 \${msg.role === "user" ? "flex-row-reverse" : "flex-row"}\`}
+                className={`flex gap-4 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}
               >
                 {/* Avatar */}
-                <div className={\`shrink-0 w-10 h-10 rounded-full flex items-center justify-center border \${
+                <div className={`shrink-0 w-10 h-10 rounded-full flex items-center justify-center border ${
                   msg.role === "user" 
                     ? "bg-surface-container-high border-outline-variant" 
                     : "bg-primary/10 border-primary/20"
-                }\`}>
-                  <span className={\`material-symbols-outlined text-xl \${
+                }`}>
+                  <span className={`material-symbols-outlined text-xl ${
                     msg.role === "user" ? "text-on-surface" : "text-primary"
-                  }\`}>
+                  }`}>
                     {msg.role === "user" ? "person" : "smart_toy"}
                   </span>
                 </div>
                 
                 {/* Message Bubble */}
-                <div className={\`max-w-[85%] md:max-w-[75%] flex flex-col \${
+                <div className={`max-w-[85%] md:max-w-[75%] flex flex-col ${
                   msg.role === "user" ? "items-end" : "items-start"
-                }\`}>
-                  <div className={\`px-5 py-3.5 rounded-2xl text-sm md:text-base leading-relaxed \${
+                }`}>
+                  <div className={`px-5 py-3.5 rounded-2xl text-sm md:text-base leading-relaxed ${
                     msg.role === "user"
                       ? "bg-primary text-surface-container-lowest rounded-tr-sm font-medium"
                       : "bg-surface-container border border-outline-variant text-on-surface rounded-tl-sm shadow-sm"
-                  }\`}>
+                  }`}>
                     {msg.content}
                   </div>
                   {msg.richContent && (
@@ -152,11 +152,11 @@ export default function ChatPage() {
                   <button
                     key={m}
                     onClick={() => setMode(m)}
-                    className={\`px-3 py-1 rounded-md text-xs font-semibold transition-all \${
+                    className={`px-3 py-1 rounded-md text-xs font-semibold transition-all ${
                       mode === m
                         ? "bg-primary text-surface-container-lowest shadow-sm"
                         : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest"
-                    }\`}
+                    }`}
                   >
                     {m}
                   </button>
@@ -177,7 +177,7 @@ export default function ChatPage() {
               <textarea
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder={\`Ask SystemArchitect AI (\${mode} mode)...\`}
+                placeholder={`Ask SystemArchitect AI (${mode} mode)...`}
                 className="flex-1 bg-transparent border-none outline-none resize-none min-h-[44px] max-h-32 text-on-surface placeholder:text-outline py-2.5 px-2 text-sm md:text-base focus:ring-0"
                 rows={1}
                 onKeyDown={(e) => {
@@ -189,11 +189,11 @@ export default function ChatPage() {
                 }}
               />
               <button
-                className={\`w-10 h-10 mb-1 rounded-xl flex items-center justify-center transition-all duration-300 \${
+                className={`w-10 h-10 mb-1 rounded-xl flex items-center justify-center transition-all duration-300 ${
                   input.trim()
                     ? "bg-primary text-surface-container-lowest hover:bg-primary/90 shadow-md"
                     : "bg-surface-container-high text-outline cursor-not-allowed"
-                }\`}
+                }`}
                 disabled={!input.trim()}
               >
                 <span className="material-symbols-outlined">send</span>

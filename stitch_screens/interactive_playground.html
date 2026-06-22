@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SystemArchitect AI - Playground</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-container": "#dad7ff",
+                    "surface-tint": "#c3c0ff",
+                    "surface-container-low": "#1b1b24",
+                    "on-tertiary": "#490080",
+                    "on-secondary": "#00344d",
+                    "inverse-surface": "#e4e1ee",
+                    "on-tertiary-fixed": "#2c0051",
+                    "inverse-on-surface": "#302f39",
+                    "primary-fixed": "#e2dfff",
+                    "background": "#13121b",
+                    "error": "#ffb4ab",
+                    "surface-container-highest": "#35343e",
+                    "inverse-primary": "#4d44e3",
+                    "error-container": "#93000a",
+                    "surface-container-lowest": "#0e0d16",
+                    "on-secondary-fixed": "#001e2f",
+                    "on-surface-variant": "#c7c4d8",
+                    "surface-container-high": "#2a2933",
+                    "on-secondary-container": "#00344e",
+                    "primary-fixed-dim": "#c3c0ff",
+                    "surface-dim": "#13121b",
+                    "on-primary-fixed-variant": "#3323cc",
+                    "on-primary": "#1d00a5",
+                    "secondary": "#89ceff",
+                    "on-error": "#690005",
+                    "surface": "#13121b",
+                    "tertiary-fixed": "#f0dbff",
+                    "on-error-container": "#ffdad6",
+                    "secondary-container": "#00a2e6",
+                    "secondary-fixed": "#c9e6ff",
+                    "outline": "#918fa1",
+                    "primary-container": "#4f46e5",
+                    "surface-bright": "#393842",
+                    "on-tertiary-container": "#ebd2ff",
+                    "on-primary-fixed": "#0f0069",
+                    "on-tertiary-fixed-variant": "#6900b3",
+                    "primary": "#c3c0ff",
+                    "outline-variant": "#464555",
+                    "secondary-fixed-dim": "#89ceff",
+                    "on-secondary-fixed-variant": "#004c6e",
+                    "on-background": "#e4e1ee",
+                    "tertiary": "#ddb7ff",
+                    "tertiary-container": "#862dd4",
+                    "on-surface": "#e4e1ee",
+                    "tertiary-fixed-dim": "#ddb7ff",
+                    "surface-container": "#1f1f28",
+                    "surface-variant": "#35343e"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "base": "4px",
+                    "sm": "1rem",
+                    "md": "1.5rem",
+                    "xl": "4rem",
+                    "gutter": "24px",
+                    "xs": "0.5rem",
+                    "lg": "2.5rem",
+                    "margin": "32px"
+            },
+            "fontFamily": {
+                    "headline-display": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "code-sm": ["JetBrains Mono"]
+            },
+            "fontSize": {
+                    "headline-display": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "800"}],
+                    "label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400"}],
+                    "code-sm": ["13px", {"lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .grid-bg {
+            background-image: 
+                linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .data-flow {
+            stroke-dasharray: 8;
+            animation: flow 1s linear infinite;
+        }
+        @keyframes flow {
+            to { stroke-dashoffset: -16; }
+        }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .node-pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(134, 45, 212, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(134, 45, 212, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(134, 45, 212, 0); }
+        }
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+    </style>
+</head>
+<body class="bg-background text-on-surface h-screen overflow-hidden flex flex-col font-body-md">
+<!-- TopNavBar -->
+<header class="bg-surface/60 backdrop-blur-xl dark:bg-surface/60 font-body-md text-body-md fixed top-0 w-full z-50 border-b border-white/10 dark:border-white/10 shadow-sm flex justify-between items-center px-gutter py-sm max-w-full mx-auto">
+<div class="flex items-center gap-xl">
+<div class="font-headline-md text-headline-md font-extrabold text-primary dark:text-primary">SystemArchitect AI</div>
+<nav class="hidden md:flex gap-md">
+<a class="text-on-surface-variant hover:text-on-surface transition-colors hover:bg-white/5 transition-all duration-200 px-3 py-1 rounded-md" href="#">Learn</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors hover:bg-white/5 transition-all duration-200 px-3 py-1 rounded-md" href="#">Explore</a>
+<a class="text-primary font-bold border-b-2 border-primary pb-1 hover:bg-white/5 transition-all duration-200 px-3 py-1" href="#">Playground</a>
+</nav>
+</div>
+<div class="flex items-center gap-md">
+<div class="relative hidden md:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant" style="font-size: 20px;">search</span>
+<input class="bg-surface-container-high border border-white/10 rounded-full py-1.5 pl-10 pr-4 text-label-md font-label-md text-on-surface focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary/50 w-64 transition-all" placeholder="Search components..." type="text"/>
+</div>
+<button class="bg-gradient-to-r from-primary-container to-secondary-container text-white px-4 py-2 rounded-lg font-label-md text-label-md active:scale-95 transition-transform hover:shadow-[0_0_15px_rgba(79,70,229,0.5)]">Get Started</button>
+<div class="w-8 h-8 rounded-full bg-surface-container-high border border-white/10 overflow-hidden cursor-pointer hover:border-primary transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-outline">person</span>
+</div>
+</div>
+</header>
+<!-- Main Workspace -->
+<div class="flex-1 flex pt-[72px] h-full overflow-hidden relative">
+<!-- Left Toolbar: Components -->
+<aside class="w-64 glass-panel border-r border-t-0 border-b-0 border-l-0 flex flex-col z-10 shrink-0">
+<div class="p-md border-b border-white/5 flex items-center justify-between">
+<h2 class="font-label-md text-label-md text-secondary">Components</h2>
+<span class="material-symbols-outlined text-outline text-sm cursor-pointer hover:text-on-surface">filter_list</span>
+</div>
+<div class="flex-1 overflow-y-auto p-sm flex flex-col gap-sm">
+<!-- Search within components -->
+<div class="relative mb-2">
+<span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-outline-variant" style="font-size: 16px;">search</span>
+<input class="w-full bg-surface-container border border-white/5 rounded-md py-1 pl-8 pr-2 text-label-md font-label-md text-on-surface focus:outline-none focus:border-secondary/50" placeholder="Filter..." type="text"/>
+</div>
+<!-- Draggable Items -->
+<div class="bg-surface-container hover:bg-surface-container-high border border-white/5 rounded-lg p-3 cursor-grab flex items-center gap-3 transition-colors group">
+<div class="w-8 h-8 rounded bg-primary-container/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-size: 20px;">api</span>
+</div>
+<div>
+<div class="font-label-md text-label-md text-on-surface group-hover:text-primary transition-colors">API Gateway</div>
+<div class="text-[11px] text-on-surface-variant font-code-sm">Ingress &amp; Routing</div>
+</div>
+</div>
+<div class="bg-surface-container hover:bg-surface-container-high border border-white/5 rounded-lg p-3 cursor-grab flex items-center gap-3 transition-colors group">
+<div class="w-8 h-8 rounded bg-secondary-container/20 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined" style="font-size: 20px;">database</span>
+</div>
+<div>
+<div class="font-label-md text-label-md text-on-surface group-hover:text-secondary transition-colors">Database</div>
+<div class="text-[11px] text-on-surface-variant font-code-sm">Persistent Storage</div>
+</div>
+</div>
+<div class="bg-surface-container hover:bg-surface-container-high border border-white/5 rounded-lg p-3 cursor-grab flex items-center gap-3 transition-colors group">
+<div class="w-8 h-8 rounded bg-tertiary-container/20 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined" style="font-size: 20px;">memory</span>
+</div>
+<div>
+<div class="font-label-md text-label-md text-on-surface group-hover:text-tertiary transition-colors">Cache</div>
+<div class="text-[11px] text-on-surface-variant font-code-sm">In-memory Store</div>
+</div>
+</div>
+<div class="bg-surface-container hover:bg-surface-container-high border border-white/5 rounded-lg p-3 cursor-grab flex items-center gap-3 transition-colors group">
+<div class="w-8 h-8 rounded bg-error-container/20 flex items-center justify-center text-error">
+<span class="material-symbols-outlined" style="font-size: 20px;">queue_play_next</span>
+</div>
+<div>
+<div class="font-label-md text-label-md text-on-surface group-hover:text-error transition-colors">Queue</div>
+<div class="text-[11px] text-on-surface-variant font-code-sm">Async Messaging</div>
+</div>
+</div>
+<div class="bg-surface-container hover:bg-surface-container-high border border-white/5 rounded-lg p-3 cursor-grab flex items-center gap-3 transition-colors group">
+<div class="w-8 h-8 rounded bg-[#00a2e6]/20 flex items-center justify-center text-[#00a2e6]">
+<span class="material-symbols-outlined" style="font-size: 20px;">lan</span>
+</div>
+<div>
+<div class="font-label-md text-label-md text-on-surface group-hover:text-[#00a2e6] transition-colors">Load Balancer</div>
+<div class="text-[11px] text-on-surface-variant font-code-sm">Traffic Dist.</div>
+</div>
+</div>
+<div class="mt-auto pt-4 border-t border-white/5">
+<button class="w-full flex items-center justify-center gap-2 text-label-md font-label-md text-outline hover:text-on-surface transition-colors py-2">
+<span class="material-symbols-outlined" style="font-size: 18px;">add</span> Add Custom Node
+                    </button>
+</div>
+</div>
+</aside>
+<!-- Center Canvas -->
+<main class="flex-1 relative bg-surface-lowest grid-bg overflow-hidden flex flex-col">
+<!-- Canvas Toolbar -->
+<div class="absolute top-4 left-4 right-4 z-10 flex justify-between items-start pointer-events-none">
+<div class="flex gap-2 pointer-events-auto">
+<button class="w-10 h-10 rounded-lg glass-panel flex items-center justify-center text-outline hover:text-primary transition-colors hover:border-primary/50" title="Select">
+<span class="material-symbols-outlined">pan_tool_alt</span>
+</button>
+<button class="w-10 h-10 rounded-lg glass-panel flex items-center justify-center text-primary border-primary/50 bg-primary/10 transition-colors" title="Connect">
+<span class="material-symbols-outlined">timeline</span>
+</button>
+</div>
+<div class="flex gap-2 pointer-events-auto">
+<div class="glass-panel px-3 py-1.5 rounded-lg flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-secondary"></div>
+<span class="text-label-md font-label-md text-on-surface font-code-sm">Status: Active</span>
+</div>
+<button class="glass-panel px-3 py-1.5 rounded-lg text-label-md font-label-md text-on-surface hover:bg-white/5 transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined" style="font-size: 18px;">download</span> Export
+                    </button>
+</div>
+</div>
+<!-- The Node Graph Area (Simulated) -->
+<div class="flex-1 relative" id="canvas-area">
+<!-- SVG Lines -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none z-0">
+<path d="M 250 200 C 350 200, 350 350, 450 350" fill="none" stroke="rgba(137, 206, 255, 0.3)" stroke-width="2"></path>
+<path class="data-flow" d="M 250 200 C 350 200, 350 350, 450 350" fill="none" stroke="#89ceff" stroke-width="2"></path>
+<path d="M 450 350 C 550 350, 550 250, 650 250" fill="none" stroke="rgba(137, 206, 255, 0.3)" stroke-width="2"></path>
+<path class="data-flow" d="M 450 350 C 550 350, 550 250, 650 250" fill="none" stroke="#89ceff" stroke-width="2"></path>
+<path d="M 450 350 C 500 350, 500 450, 550 450" fill="none" stroke="rgba(255, 180, 171, 0.3)" stroke-dasharray="4,4" stroke-width="2"></path>
+</svg>
+<!-- Nodes -->
+<div class="absolute left-[100px] top-[160px] w-40 glass-panel rounded-lg p-3 z-10 cursor-move border-l-2 border-l-primary hover:border-white/20 hover:border-l-primary transition-colors shadow-[0_0_15px_rgba(195,192,255,0.05)]">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary text-sm">lan</span>
+<span class="font-label-md text-label-md text-on-surface">Load Balancer</span>
+</div>
+<div class="flex justify-between items-center text-[10px] font-code-sm text-outline">
+<span>Req: 1.2k/s</span>
+<span class="text-secondary">OK</span>
+</div>
+</div>
+<div class="absolute left-[300px] top-[310px] w-40 glass-panel rounded-lg p-3 z-10 cursor-move border-l-2 border-l-secondary node-pulse hover:border-white/20 hover:border-l-secondary transition-colors">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-secondary text-sm">api</span>
+<span class="font-label-md text-label-md text-on-surface">API Gateway</span>
+</div>
+<div class="flex justify-between items-center text-[10px] font-code-sm text-outline">
+<span>Lat: 45ms</span>
+<span class="text-secondary">OK</span>
+</div>
+</div>
+<div class="absolute left-[650px] top-[210px] w-40 glass-panel rounded-lg p-3 z-10 cursor-move border-l-2 border-l-tertiary hover:border-white/20 hover:border-l-tertiary transition-colors">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-tertiary text-sm">database</span>
+<span class="font-label-md text-label-md text-on-surface">Primary DB</span>
+</div>
+<div class="flex justify-between items-center text-[10px] font-code-sm text-outline">
+<span>Conn: 84%</span>
+<span class="text-error">WARN</span>
+</div>
+</div>
+<div class="absolute left-[550px] top-[410px] w-40 glass-panel rounded-lg p-3 z-10 cursor-move border-l-2 border-l-outline hover:border-white/20 hover:border-l-outline transition-colors opacity-70">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-outline text-sm">memory</span>
+<span class="font-label-md text-label-md text-outline">Redis Cache</span>
+</div>
+<div class="text-[10px] font-code-sm text-outline italic">Proposed</div>
+</div>
+</div>
+<!-- Bottom Panel: Controls & Metrics -->
+<div class="h-48 glass-panel border-t border-white/5 flex w-full z-20 shrink-0">
+<!-- Controls -->
+<div class="w-1/3 p-sm border-r border-white/5 flex flex-col gap-sm">
+<div class="font-label-md text-label-md text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined" style="font-size: 16px;">tune</span> Simulation Controls
+                    </div>
+<div class="flex-1 flex flex-col justify-around">
+<div>
+<div class="flex justify-between text-[11px] font-code-sm text-outline mb-1">
+<span>Traffic Volume</span>
+<span>1,200 RPS</span>
+</div>
+<input class="w-full accent-secondary h-1 bg-surface-container rounded-lg appearance-none cursor-pointer" max="100" min="0" type="range" value="40"/>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 bg-surface-container hover:bg-surface-container-high border border-white/5 rounded py-1.5 text-label-md font-label-md text-error flex items-center justify-center gap-1 transition-colors">
+<span class="material-symbols-outlined" style="font-size: 14px;">bolt</span> Inject Fault
+                            </button>
+<select class="flex-1 bg-surface-container border border-white/5 rounded py-1.5 px-2 text-label-md font-label-md text-on-surface focus:outline-none appearance-none">
+<option>US-East (N. Virginia)</option>
+<option>EU-West (Ireland)</option>
+<option>AP-South (Mumbai)</option>
+</select>
+</div>
+</div>
+</div>
+<!-- Live Metrics -->
+<div class="flex-1 p-sm flex flex-col gap-sm">
+<div class="font-label-md text-label-md text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined" style="font-size: 16px;">monitoring</span> Live Metrics
+                    </div>
+<div class="flex-1 flex gap-md">
+<!-- Chart 1: Latency -->
+<div class="flex-1 bg-surface-container/50 rounded-lg border border-white/5 p-2 flex flex-col relative overflow-hidden">
+<div class="text-[11px] font-code-sm text-outline mb-1">Global Latency (ms)</div>
+<div class="text-headline-md font-headline-md text-on-surface">45<span class="text-label-md font-label-md text-secondary ml-1">ms</span></div>
+<!-- Mock Sparkline -->
+<svg class="absolute bottom-0 left-0 w-full h-1/2" preserveaspectratio="none">
+<path d="M0,20 Q10,10 20,20 T40,15 T60,25 T80,10 T100,18" fill="none" opacity="0.7" stroke="#89ceff" stroke-width="2" transform="scale(3, 1.5)"></path>
+<path d="M0,20 Q10,10 20,20 T40,15 T60,25 T80,10 T100,18 L100,40 L0,40 Z" fill="url(#latencyGrad)" opacity="0.2" transform="scale(3, 1.5)"></path>
+<defs>
+<lineargradient id="latencyGrad" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#89ceff" stop-opacity="1"></stop>
+<stop offset="100%" stop-color="#89ceff" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+</svg>
+</div>
+<!-- Chart 2: Errors -->
+<div class="flex-1 bg-surface-container/50 rounded-lg border border-white/5 p-2 flex flex-col relative overflow-hidden">
+<div class="text-[11px] font-code-sm text-outline mb-1">Error Rate (%)</div>
+<div class="text-headline-md font-headline-md text-on-surface">0.02<span class="text-label-md font-label-md text-error ml-1">%</span></div>
+<!-- Mock Sparkline -->
+<svg class="absolute bottom-0 left-0 w-full h-1/2" preserveaspectratio="none">
+<path d="M0,30 L20,30 L25,20 L30,30 L60,30 L65,10 L70,30 L100,30" fill="none" opacity="0.7" stroke="#ffb4ab" stroke-width="1.5" transform="scale(3, 1.5)"></path>
+</svg>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Right Panel: AI Assistant -->
+<aside class="w-80 glass-panel border-l border-t-0 border-b-0 border-r-0 flex flex-col z-10 shrink-0 shadow-[-10px_0_20px_rgba(0,0,0,0.2)]">
+<div class="p-md border-b border-white/5 flex items-center gap-2 bg-surface-container-highest/30">
+<span class="material-symbols-outlined text-primary">smart_toy</span>
+<h2 class="font-label-md text-label-md text-primary font-bold">Architect AI</h2>
+</div>
+<div class="flex-1 overflow-y-auto p-sm flex flex-col gap-md">
+<!-- AI Message: Warning -->
+<div class="bg-surface-container border border-error/20 rounded-lg p-3 flex gap-3 relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-error"></div>
+<span class="material-symbols-outlined text-error mt-0.5" style="font-size: 18px;">warning</span>
+<div>
+<div class="font-label-md text-label-md text-on-surface mb-1">Database Bottleneck Detected</div>
+<p class="font-body-md text-[13px] text-on-surface-variant leading-relaxed">
+                            Primary DB connections are at 84%. At current simulation traffic (1.2k RPS), you will exhaust connections in ~4 mins.
+                        </p>
+<div class="mt-2 flex gap-2">
+<button class="bg-error/10 hover:bg-error/20 text-error px-2 py-1 rounded text-[11px] font-label-md transition-colors border border-error/30">View Details</button>
+<button class="bg-surface-highest hover:bg-white/5 text-on-surface px-2 py-1 rounded text-[11px] font-label-md transition-colors border border-white/10">Dismiss</button>
+</div>
+</div>
+</div>
+<!-- AI Message: Suggestion -->
+<div class="bg-surface-container border border-tertiary/20 rounded-lg p-3 flex gap-3 relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-tertiary"></div>
+<span class="material-symbols-outlined text-tertiary mt-0.5" style="font-size: 18px;">lightbulb</span>
+<div>
+<div class="font-label-md text-label-md text-on-surface mb-1">Architecture Optimization</div>
+<p class="font-body-md text-[13px] text-on-surface-variant leading-relaxed">
+                            Adding a Redis Cache before the Primary DB could reduce read load by estimated 65%.
+                        </p>
+<button class="mt-2 w-full bg-tertiary/10 hover:bg-tertiary/20 text-tertiary py-1.5 rounded text-[11px] font-label-md transition-colors border border-tertiary/30 flex items-center justify-center gap-1">
+<span class="material-symbols-outlined" style="font-size: 14px;">add_circle</span> Apply to Canvas
+                        </button>
+</div>
+</div>
+<!-- AI Message: Info -->
+<div class="bg-surface-container border border-white/5 rounded-lg p-3 flex gap-3">
+<span class="material-symbols-outlined text-outline mt-0.5" style="font-size: 18px;">info</span>
+<div>
+<p class="font-body-md text-[13px] text-on-surface-variant leading-relaxed">
+                            Simulation running smoothly in AP-South. Latency is within acceptable parameters (&lt;100ms).
+                        </p>
+</div>
+</div>
+</div>
+<!-- Chat Input -->
+<div class="p-sm border-t border-white/5 bg-surface-container-low/50">
+<div class="relative">
+<input class="w-full bg-surface border border-white/10 rounded-lg py-2 pl-3 pr-10 text-label-md font-label-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-all text-sm" placeholder="Ask Architect AI..." type="text"/>
+<button class="absolute right-2 top-1/2 -translate-y-1/2 text-primary hover:text-primary-container transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-size: 20px;">send</span>
+</button>
+</div>
+</div>
+</aside>
+</div>
+</body></html>

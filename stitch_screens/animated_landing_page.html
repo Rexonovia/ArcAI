@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SystemArchitect AI - Understand Modern Apps</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-container": "#dad7ff",
+                        "surface-tint": "#c3c0ff",
+                        "surface-container-low": "#1b1b24",
+                        "on-tertiary": "#490080",
+                        "on-secondary": "#00344d",
+                        "inverse-surface": "#e4e1ee",
+                        "on-tertiary-fixed": "#2c0051",
+                        "inverse-on-surface": "#302f39",
+                        "primary-fixed": "#e2dfff",
+                        "background": "#13121b",
+                        "error": "#ffb4ab",
+                        "surface-container-highest": "#35343e",
+                        "inverse-primary": "#4d44e3",
+                        "error-container": "#93000a",
+                        "surface-container-lowest": "#0e0d16",
+                        "on-secondary-fixed": "#001e2f",
+                        "on-surface-variant": "#c7c4d8",
+                        "surface-container-high": "#2a2933",
+                        "on-secondary-container": "#00344e",
+                        "primary-fixed-dim": "#c3c0ff",
+                        "surface-dim": "#13121b",
+                        "on-primary-fixed-variant": "#3323cc",
+                        "on-primary": "#1d00a5",
+                        "secondary": "#89ceff",
+                        "on-error": "#690005",
+                        "surface": "#13121b",
+                        "tertiary-fixed": "#f0dbff",
+                        "on-error-container": "#ffdad6",
+                        "secondary-container": "#00a2e6",
+                        "secondary-fixed": "#c9e6ff",
+                        "outline": "#918fa1",
+                        "primary-container": "#4f46e5",
+                        "surface-bright": "#393842",
+                        "on-tertiary-container": "#ebd2ff",
+                        "on-primary-fixed": "#0f0069",
+                        "on-tertiary-fixed-variant": "#6900b3",
+                        "primary": "#c3c0ff",
+                        "outline-variant": "#464555",
+                        "secondary-fixed-dim": "#89ceff",
+                        "on-secondary-fixed-variant": "#004c6e",
+                        "on-background": "#e4e1ee",
+                        "tertiary": "#ddb7ff",
+                        "tertiary-container": "#862dd4",
+                        "on-surface": "#e4e1ee",
+                        "tertiary-fixed-dim": "#ddb7ff",
+                        "surface-container": "#1f1f28",
+                        "surface-variant": "#35343e"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "4px",
+                        "sm": "1rem",
+                        "md": "1.5rem",
+                        "xl": "4rem",
+                        "gutter": "24px",
+                        "xs": "0.5rem",
+                        "lg": "2.5rem",
+                        "margin": "32px"
+                    },
+                    "fontFamily": {
+                        "headline-display": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "code-sm": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "headline-display": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "800" }],
+                        "label-md": ["14px", { "lineHeight": "1.4", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400" }],
+                        "code-sm": ["13px", { "lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .data-flow-line {
+            position: absolute;
+            background: rgba(137, 206, 255, 0.2);
+            overflow: hidden;
+        }
+        
+        @media (prefers-reduced-motion: no-preference) {
+            .data-comet {
+                position: absolute;
+                background: #89ceff;
+                box-shadow: 0 0 10px 2px #89ceff;
+                animation: flow linear infinite;
+            }
+            @keyframes flow {
+                0% { transform: translateX(-100%) translateY(-100%); opacity: 0; }
+                10% { opacity: 1; }
+                90% { opacity: 1; }
+                100% { transform: translateX(200%) translateY(200%); opacity: 0; }
+            }
+            .pulse-node {
+                animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+            }
+            @keyframes pulse-ring {
+                0% { box-shadow: 0 0 0 0 rgba(221, 183, 255, 0.4); }
+                70% { box-shadow: 0 0 0 15px rgba(221, 183, 255, 0); }
+                100% { box-shadow: 0 0 0 0 rgba(221, 183, 255, 0); }
+            }
+            
+            .node-glow {
+                animation: glow-pulse 3s infinite alternate;
+            }
+            .node-glow-delayed-1 {
+                animation: glow-pulse 3s infinite alternate 1s;
+            }
+            .node-glow-delayed-2 {
+                animation: glow-pulse 3s infinite alternate 2s;
+            }
+            @keyframes glow-pulse {
+                0% { box-shadow: 0 0 5px rgba(137, 206, 255, 0.1); }
+                100% { box-shadow: 0 0 20px rgba(137, 206, 255, 0.4); }
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, ::before, ::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+            .data-comet, [style*="animation:"] {
+                display: none !important;
+            }
+        }
+        
+        /* Grid Background Pattern */
+        .grid-bg {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md antialiased grid-bg min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<nav class="bg-surface/60 backdrop-blur-xl dark:bg-surface/60 fixed top-0 w-full z-50 border-b border-white/10 dark:border-white/10 shadow-sm flex justify-between items-center px-gutter py-sm max-w-full mx-auto">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary text-2xl" style="font-variation-settings: 'FILL' 1;">architecture</span>
+<span class="font-headline-md text-headline-md font-extrabold text-primary dark:text-primary tracking-tight">SystemArchitect AI</span>
+</div>
+<div class="hidden md:flex gap-lg">
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md hover:bg-white/5 transition-all duration-200 px-3 py-1 rounded-md" href="#">Learn</a>
+<a class="text-primary font-bold border-b-2 border-primary pb-1 font-body-md text-body-md" href="#">Explore</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md hover:bg-white/5 transition-all duration-200 px-3 py-1 rounded-md" href="#">Playground</a>
+</div>
+<div class="flex items-center gap-md">
+<button class="hidden md:block bg-gradient-to-r from-primary-container to-secondary-container text-white px-4 py-2 rounded-lg font-label-md text-label-md hover:opacity-90 transition-opacity shadow-[0_0_15px_rgba(79,70,229,0.3)]">Get Started</button>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-on-surface cursor-pointer text-2xl md:hidden">menu</span>
+<img alt="User profile" class="w-8 h-8 rounded-full border border-outline hidden md:block" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzs44yBXHeUz--1FbmDuIAvq4j4UuPDmGsGAo_8tMOklWQk6nUQVn077xyfMhBhC8a3u1TLDiRJvctOqnMiTLg4ay_ovGcU5Pd2Tj6nIMPDPTBRiUeWzNcxKR-0H6R6pARU1lfdiQEnQJguJEQCNrP_cpklLfulrs6w1qMkmN7n4s2lrs3eTUdH72M_XFXDzx1WaOQHWhdLfV66VtBbDc6l6s5RZ4_fGb2DC1YCb8Zqe6_9W_0k39tdnbCo3qyH0eDB7T2y24QmtXt"/>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-[100px] px-margin md:px-gutter max-w-7xl mx-auto w-full flex flex-col gap-xl pb-xl">
+<!-- Hero Section -->
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-xl items-center min-h-[716px]">
+<!-- Left: Copy & CTA -->
+<div class="flex flex-col gap-lg z-10">
+<div class="inline-flex items-center gap-2 bg-surface-container/50 border border-outline/20 px-3 py-1 rounded-full w-max backdrop-blur-sm">
+<span class="w-2 h-2 rounded-full bg-secondary pulse-node"></span>
+<span class="font-code-sm text-code-sm text-secondary">v2.0 Architecture Engine Live</span>
+</div>
+<h1 class="font-headline-display text-headline-display md:text-headline-display text-headline-lg-mobile text-on-surface">
+                    Understand How Modern Apps <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Actually Work.</span>
+</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-lg">
+                    Deconstruct the systems behind Instagram, WhatsApp, and Netflix. Interactive learning environment for software engineers and architects powered by AI.
+                </p>
+<div class="flex flex-col sm:flex-row gap-md pt-xs">
+<button class="bg-gradient-to-r from-primary-container to-secondary-container text-white px-6 py-3 rounded-lg font-label-md text-label-md hover:opacity-90 transition-all shadow-[0_0_20px_rgba(79,70,229,0.4)] flex justify-center items-center gap-2 active:scale-95">
+                        Start Learning Free
+                        <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+<button class="glass-panel text-on-surface px-6 py-3 rounded-lg font-label-md text-label-md hover:border-secondary transition-colors flex justify-center items-center gap-2 active:scale-95">
+<span class="material-symbols-outlined text-[18px]">account_tree</span>
+                        Explore Product Architectures
+                    </button>
+</div>
+<div class="flex items-center gap-4 mt-sm pt-sm border-t border-white/5">
+<div class="flex -space-x-2">
+<img alt="Engineer" class="w-8 h-8 rounded-full border border-surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGCkXYQGm4eMTWe4PC9GFNyw_BOo9RhrFUivujWQAQUty9CesLaQmr28u6-llTm4wuNy-7aBv0u6FjhSreRfxU6IxFb85ZVthixpxaicngcLtQOSzmjv0sz9LSqZCEuZEUZg38fm0Jk5dx8Hv-ZSusKXHtu9HLVCDwv4wzy5zhOX2eD0xoLdqRVM6c_E4MSbGygaQ8eO71m20o8BAijQr_lQ4d_-4HBAK3Je1B_GLiFtIdWA8hAW1Y2KwH-VC7Hc5Gjyi08CLQw8Zj"/>
+<img alt="Architect" class="w-8 h-8 rounded-full border border-surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBij_eEjaxEbsJDy5UMuLc5_t5yatr0A234Rnf20p5G8gPfMSJwBoZpaOEOCOhg2MMXrIPZOP2NgM10LV2gO6lvoDhtBCmdwC5LB6VRMXFFaR1WCA4-UVEw4RlfmHeZsN40SHNtP_b5hoR9q8LdTnOp1v24bvOW-GVumVaVfVk0kwIoyJjbTrivDKAVo8FOeVcbyWPgwZXSJSBhEv7KMEmbVBSNS56bbyTD2sPezjwuqWGC4n7Ggps5TSwG-3oDRRCh6HPJcg7Ua4z-"/>
+<img alt="Developer" class="w-8 h-8 rounded-full border border-surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVhguaj6CNpgZVxYVgdMmlTyrDs15oyicx1GKGKPB3rHpoJMGZbsL_XdBSzb9IpJiUaWDEC4m98HvYMr1_kXh7agPeEwWGIfJbrsaDCPq2Y5K35v8zp6QgWoRnO9r6yia2oSi9zBEFedRQndYNVB5yT8PyYKqCxpL-IbbCUHsiRe-8jZ9JgpbkiLWksQ8sT7h1XpGqxE5d8M9o0VrHBoj2W-bZcNoC2OK2zRWgfuMGgRSVx9-UCkd71svhdQryxtNOY_lOUXf3ouYI"/>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Joined by 10,000+ engineers</p>
+</div>
+</div>
+<!-- Right: Interactive Visualization -->
+<div class="relative w-full aspect-square md:aspect-video lg:aspect-square glass-panel rounded-xl flex items-center justify-center overflow-hidden p-6 shadow-[0_0_40px_rgba(79,70,229,0.1)]">
+<div class="absolute top-4 left-4 font-code-sm text-code-sm text-outline flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">terminal</span>
+                    Simulation: Send WhatsApp Message
+                </div>
+<!-- Abstract Graph Rep -->
+<div class="relative w-full h-full flex items-center justify-between mt-8">
+<!-- Client -->
+<div class="flex flex-col items-center gap-2 z-10 w-1/5">
+<div class="w-12 h-16 rounded-md bg-surface-container border border-outline/30 flex items-center justify-center relative group hover:border-secondary transition-colors cursor-pointer node-glow">
+<span class="material-symbols-outlined text-secondary text-2xl">smartphone</span>
+<div class="absolute -top-2 -right-2 w-4 h-4 bg-primary rounded-full pulse-node opacity-0 group-hover:opacity-100 transition-opacity"></div>
+</div>
+<span class="font-code-sm text-[11px] text-on-surface-variant text-center">Client App</span>
+</div>
+<!-- Flow 1 -->
+<div class="flex-grow h-[2px] relative bg-white/5 mx-2">
+<div class="absolute w-full h-full overflow-hidden">
+<div class="w-8 h-full bg-secondary absolute top-0 left-0" style="box-shadow: 0 0 8px 2px #89ceff; animation: flow 2s linear infinite;"></div>
+</div>
+</div>
+<!-- API Gateway -->
+<div class="flex flex-col items-center gap-2 z-10 w-1/5">
+<div class="w-16 h-16 rounded-full bg-surface-container border border-outline/30 flex items-center justify-center relative group hover:border-tertiary transition-colors cursor-pointer node-glow-delayed-1">
+<span class="material-symbols-outlined text-tertiary text-2xl">router</span>
+</div>
+<span class="font-code-sm text-[11px] text-on-surface-variant text-center">API Gateway</span>
+<div class="bg-tertiary/10 text-tertiary px-2 py-0.5 rounded text-[9px] font-code-sm border border-tertiary/20">Load Balancing</div>
+</div>
+<!-- Flow 2 -->
+<div class="flex-grow h-[2px] relative bg-white/5 mx-2">
+<div class="absolute w-full h-full overflow-hidden">
+<div class="w-8 h-full bg-tertiary absolute top-0 left-0" style="box-shadow: 0 0 8px 2px #ddb7ff; animation: flow 2s linear infinite 0.5s;"></div>
+</div>
+</div>
+<!-- Server Cluster -->
+<div class="flex flex-col items-center gap-2 z-10 w-1/5">
+<div class="w-20 h-24 rounded-lg bg-surface-container border border-outline/30 flex flex-col items-center justify-center gap-1 relative group hover:border-primary transition-colors cursor-pointer node-glow-delayed-2">
+<span class="material-symbols-outlined text-primary text-xl">dns</span>
+<div class="w-8 h-1 bg-white/10 rounded-full mt-1 overflow-hidden"><div class="w-2/3 h-full bg-primary pulse-node"></div></div>
+<div class="w-8 h-1 bg-white/10 rounded-full"><div class="w-1/3 h-full bg-primary"></div></div>
+<div class="w-8 h-1 bg-white/10 rounded-full"><div class="w-4/5 h-full bg-primary"></div></div>
+</div>
+<span class="font-code-sm text-[11px] text-on-surface-variant text-center">Message Servers</span>
+</div>
+<!-- Flow 3 Split (Up to Queue, Down to DB) -->
+<div class="w-1/5 h-32 relative mx-2 flex flex-col justify-between py-4">
+<!-- Up branch -->
+<div class="absolute top-4 left-0 w-full h-[2px] bg-white/5 origin-left rotate-[-20deg]">
+<div class="absolute w-full h-full overflow-hidden">
+<div class="w-6 h-full bg-secondary absolute top-0 left-0" style="box-shadow: 0 0 6px 1px #89ceff; animation: flow 1.5s linear infinite 1s;"></div>
+</div>
+</div>
+<!-- Down branch -->
+<div class="absolute bottom-4 left-0 w-full h-[2px] bg-white/5 origin-left rotate-[20deg]">
+<div class="absolute w-full h-full overflow-hidden">
+<div class="w-6 h-full bg-primary absolute top-0 left-0" style="box-shadow: 0 0 6px 1px #c3c0ff; animation: flow 2.5s linear infinite 1.2s;"></div>
+</div>
+</div>
+</div>
+<!-- Output Nodes -->
+<div class="flex flex-col justify-between h-40 z-10 w-1/5">
+<!-- Queue -->
+<div class="flex flex-col items-center gap-1">
+<div class="w-12 h-10 rounded-md bg-surface-container border border-outline/30 flex items-center justify-center hover:border-secondary transition-colors cursor-pointer node-glow-delayed-1">
+<span class="material-symbols-outlined text-secondary text-lg">queue</span>
+</div>
+<span class="font-code-sm text-[10px] text-on-surface-variant text-center">Kafka Queue</span>
+</div>
+<!-- DB -->
+<div class="flex flex-col items-center gap-1">
+<div class="w-12 h-14 rounded-md bg-surface-container border border-outline/30 flex items-center justify-center hover:border-primary transition-colors cursor-pointer node-glow-delayed-2">
+<span class="material-symbols-outlined text-primary text-lg">database</span>
+</div>
+<span class="font-code-sm text-[10px] text-on-surface-variant text-center">Cassandra DB</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Feature Showcase -->
+<section class="flex flex-col gap-lg mt-xl">
+<div class="text-center max-w-2xl mx-auto mb-md">
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-2">Architectural Mastery, Accelerated</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Move beyond high-level diagrams. Dive into component-level specifics, interactive traffic simulations, and expert AI guidance.</p>
+</div>
+<!-- Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[300px]">
+<!-- Card 1: Visual Preview -->
+<div class="glass-panel rounded-xl p-6 flex flex-col md:col-span-2 group overflow-hidden relative cursor-pointer border border-white/5 hover:border-secondary/50 transition-colors duration-300">
+<div class="absolute inset-0 bg-gradient-to-br from-secondary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex justify-between items-start z-10 mb-4">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">How Instagram Works</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm mt-1">System Design Case Study</p>
+</div>
+<span class="bg-secondary/10 text-secondary px-3 py-1 rounded-full font-label-md text-label-md text-xs border border-secondary/20">Featured</span>
+</div>
+<div class="flex-grow rounded-lg bg-surface-container-low border border-white/5 relative overflow-hidden flex items-center justify-center group-hover:scale-[1.02] transition-transform duration-500">
+<!-- Abstract Insta layout -->
+<div class="w-3/4 h-3/4 border border-outline/20 rounded-md p-2 flex flex-col gap-2">
+<div class="w-full h-8 flex items-center gap-2 border-b border-outline/20 pb-2">
+<div class="w-6 h-6 rounded-full bg-white/10"></div>
+<div class="w-16 h-2 rounded bg-white/10"></div>
+</div>
+<div class="flex-grow bg-white/5 rounded relative overflow-hidden flex items-center justify-center">
+<span class="material-symbols-outlined text-outline/50 text-4xl">image</span>
+<!-- CDN Flow indicator -->
+<div class="absolute top-2 right-2 flex items-center gap-1 bg-surface/80 backdrop-blur px-2 py-1 rounded text-[9px] font-code-sm text-secondary border border-secondary/20">
+<span class="material-symbols-outlined text-[10px]">cloud_download</span> Edge CDN
+                                 </div>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 2: AI Chat -->
+<div class="glass-panel rounded-xl p-6 flex flex-col group overflow-hidden relative border border-white/5 hover:border-tertiary/50 transition-colors duration-300">
+<div class="absolute inset-0 bg-gradient-to-br from-tertiary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<h3 class="font-headline-md text-headline-md text-on-surface z-10">Ask AI Anything</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm mt-1 z-10 mb-4">Your personal staff engineer.</p>
+<div class="flex-grow rounded-lg bg-surface-container-low border border-white/5 p-4 flex flex-col gap-3 font-code-sm text-code-sm z-10 group-hover:-translate-y-1 transition-transform">
+<div class="flex gap-2 items-start">
+<span class="material-symbols-outlined text-outline text-sm mt-0.5">account_circle</span>
+<div class="bg-surface p-2 rounded-md rounded-tl-none border border-white/5 text-on-surface-variant text-[11px]">Why use Cassandra instead of MySQL for the message store?</div>
+</div>
+<div class="flex gap-2 items-start">
+<span class="material-symbols-outlined text-tertiary text-sm mt-0.5">smart_toy</span>
+<div class="bg-tertiary/10 p-2 rounded-md rounded-tr-none border border-tertiary/20 text-on-surface text-[11px]">
+                                WhatsApp requires massive write throughput. Cassandra's LSM-tree architecture handles high write loads better than MySQL's B-trees...
+                            </div>
+</div>
+</div>
+</div>
+<!-- Card 3: Playground -->
+<div class="glass-panel rounded-xl p-6 flex flex-col md:col-span-3 group overflow-hidden relative border border-white/5 hover:border-primary/50 transition-colors duration-300 min-h-[250px]">
+<div class="absolute inset-0 bg-gradient-to-tr from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center z-10 mb-6 gap-4">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">tune</span> Interactive Playground
+                            </h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm mt-1">Simulate traffic spikes and watch system constraints in real-time.</p>
+</div>
+<!-- Slider UI -->
+<div class="w-full md:w-64 bg-surface-container-low p-3 rounded-lg border border-white/5 flex flex-col gap-2">
+<div class="flex justify-between font-code-sm text-[11px] text-on-surface-variant">
+<span>Traffic Load (Req/s)</span>
+<span class="text-primary font-bold">10,000</span>
+</div>
+<input class="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer [&amp;::-webkit-slider-thumb]:appearance-none [&amp;::-webkit-slider-thumb]:w-3 [&amp;::-webkit-slider-thumb]:h-3 [&amp;::-webkit-slider-thumb]:bg-primary [&amp;::-webkit-slider-thumb]:rounded-full" max="100" min="1" type="range" value="50"/>
+</div>
+</div>
+<!-- Sim visual -->
+<div class="flex-grow flex items-center justify-around z-10 px-4 md:px-12 relative">
+<!-- Connecting line -->
+<div class="absolute top-1/2 left-10 right-10 h-0.5 bg-white/5 -translate-y-1/2 -z-10"></div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-12 h-12 rounded bg-surface border border-outline flex items-center justify-center">
+<span class="material-symbols-outlined text-outline">group</span>
+</div>
+<span class="bg-primary/10 text-primary px-2 py-0.5 rounded text-[10px] font-code-sm border border-primary/20">Normal Load</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-14 h-14 rounded-full bg-surface border border-primary shadow-[0_0_15px_rgba(195,192,255,0.2)] flex items-center justify-center pulse-node">
+<span class="material-symbols-outlined text-primary">speed</span>
+</div>
+<span class="bg-primary/10 text-primary px-2 py-0.5 rounded text-[10px] font-code-sm border border-primary/20">Scaling Cluster</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-12 h-12 rounded bg-surface border border-error flex items-center justify-center relative">
+<span class="material-symbols-outlined text-error">database</span>
+<div class="absolute -top-1 -right-1 w-3 h-3 bg-error rounded-full animate-ping"></div>
+</div>
+<span class="bg-error/10 text-error px-2 py-0.5 rounded text-[10px] font-code-sm border border-error/20">I/O Bottleneck</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest dark:bg-surface-container-lowest w-full py-lg border-t border-white/5 flat flex flex-col md:flex-row justify-between items-center px-margin mt-xl">
+<div class="flex items-center gap-2 mb-4 md:mb-0">
+<span class="material-symbols-outlined text-primary">architecture</span>
+<span class="font-headline-md text-headline-md text-primary tracking-tight">SystemArchitect AI</span>
+</div>
+<div class="flex gap-md font-body-md text-body-md">
+<a class="text-outline hover:text-on-surface hover:underline transition-all opacity-80 hover:opacity-100" href="#">Documentation</a>
+<a class="text-outline hover:text-on-surface hover:underline transition-all opacity-80 hover:opacity-100" href="#">API</a>
+<a class="text-outline hover:text-on-surface hover:underline transition-all opacity-80 hover:opacity-100" href="#">Privacy</a>
+<a class="text-outline hover:text-on-surface hover:underline transition-all opacity-80 hover:opacity-100" href="#">Terms</a>
+</div>
+<div class="mt-4 md:mt-0 font-body-md text-body-md text-outline opacity-80">
+            © 2024 SystemArchitect AI. Built for scale.
+        </div>
+</footer>
+</body></html>
