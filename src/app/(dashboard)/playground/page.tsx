@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 
 // --- Types ---
 type Position = { x: number; y: number };
@@ -76,8 +76,8 @@ export default function PlaygroundPage() {
     try {
       const item: DragItem = JSON.parse(typeStr);
       const rect = canvasRef.current.getBoundingClientRect();
-      const x = e.clientX - rect.left - 80; // adjust for center of node (~160 width)
-      const y = e.clientY - rect.top - 40;  // adjust for center of node (~80 height)
+      const x = e.clientX - rect.left - 80;
+      const y = e.clientY - rect.top - 40;
       
       const newNode: ArchitectureNode = {
         id: `n_${Date.now()}`,
@@ -147,13 +147,11 @@ export default function PlaygroundPage() {
       const target = nodes.find(n => n.id === conn.targetId);
       if (!source || !target) return null;
 
-      // Approximate connection points (Right of source, Left of target)
       const startX = source.position.x + 160; 
       const startY = source.position.y + 40;  
       const endX = target.position.x;
       const endY = target.position.y + 40;
 
-      // Draw bezier curve for smooth connection
       const cp1X = startX + (endX - startX) / 2;
       const cp1Y = startY;
       const cp2X = startX + (endX - startX) / 2;
@@ -181,13 +179,19 @@ export default function PlaygroundPage() {
     });
   };
 
+  const getStatusColor = (status: NodeStatus) => {
+    if (status === 'error') return 'text-error';
+    if (status === 'warning') return 'text-tertiary';
+    return 'text-primary';
+  };
+
   return (
-    <div className="flex flex-col h-[calc(100vh-4rem)] w-full overflow-hidden bg-background text-on-surface">
+    <div className="flex flex-col h-[calc(100vh-72px)] w-full overflow-hidden bg-background text-on-surface">
       {/* Main Content Area */}
       <div className="flex flex-1 overflow-hidden relative">
         
         {/* Left Toolbar - Components */}
-        <div className="w-64 border-r border-outline-variant bg-surface-container-low flex flex-col z-20">
+        <div className="w-64 border-r border-outline-variant bg-surface-container-low flex-col z-20 hidden lg:flex">
           <div className="p-4 border-b border-outline-variant font-medium flex items-center gap-2">
             <span className="material-symbols-outlined text-primary">category</span>
             Component Library
@@ -201,7 +205,7 @@ export default function PlaygroundPage() {
                   e.dataTransfer.setData('application/json', JSON.stringify(item));
                   e.dataTransfer.effectAllowed = 'copy';
                 }}
-                className="flex items-center gap-3 p-3 rounded-md bg-surface-container border border-outline-variant cursor-grab active:cursor-grabbing hover:border-primary hover:bg-surface-container-high transition-colors"
+                className="flex items-center gap-3 p-3 rounded-md bg-surface-container border border-outline-variant cursor-grab active:cursor-grabbing hover:border-primary hover:bg-surface-container-high hover:shadow-md active:scale-[0.97] transition-all duration-200"
               >
                 <div className="w-8 h-8 rounded bg-primary-container/20 flex items-center justify-center text-primary">
                   <span className="material-symbols-outlined text-lg">{item.icon}</span>
@@ -228,11 +232,11 @@ export default function PlaygroundPage() {
           {nodes.map(node => (
             <div
               key={node.id}
-              className={`absolute flex flex-col w-[160px] rounded-lg border-2 cursor-grab active:cursor-grabbing glass-panel transition-shadow duration-200 ${
-                selectedNodeId === node.id ? 'border-primary shadow-[0_0_15px_rgba(195,192,255,0.3)] z-30' : 'border-outline-variant z-10'
-              } ${node.status === 'warning' ? 'pulse-node border-[var(--color-tertiary)]' : node.status === 'error' ? 'pulse-node border-error' : ''}`}
+              className={`absolute flex flex-col w-[160px] rounded-lg border-2 cursor-grab active:cursor-grabbing glass-panel transition-all duration-200 ${
+                selectedNodeId === node.id ? 'border-primary shadow-[0_0_20px_rgba(195,192,255,0.3)] z-30 scale-[1.02]' : 'border-outline-variant z-10 hover:shadow-lg'
+              } ${node.status === 'warning' ? 'node-glow border-tertiary' : node.status === 'error' ? 'node-glow border-error' : ''}`}
               style={{
-                transform: `translate(${node.position.x}px, ${node.position.y}px)`,
+                transform: `translate(${node.position.x}px, ${node.position.y}px)${selectedNodeId === node.id ? ' scale(1.02)' : ''}`,
                 backgroundColor: 'var(--color-surface-container-high)',
               }}
               onPointerDown={(e) => handleNodePointerDown(e, node.id)}
@@ -246,14 +250,12 @@ export default function PlaygroundPage() {
             >
               {/* Node Header */}
               <div className="flex items-center gap-2 p-2 border-b border-outline-variant bg-surface-container-highest rounded-t-md">
-                <span className={`material-symbols-outlined text-lg ${
-                  node.status === 'error' ? 'text-error' : node.status === 'warning' ? 'text-[var(--color-tertiary)]' : 'text-primary'
-                }`}>
+                <span className={`material-symbols-outlined text-lg ${getStatusColor(node.status)}`}>
                   {node.icon}
                 </span>
                 <span className="text-xs font-semibold truncate flex-1">{node.label}</span>
                 {node.status !== 'healthy' && (
-                  <span className={`material-symbols-outlined text-sm ${node.status === 'error' ? 'text-error' : 'text-[var(--color-tertiary)]'}`}>
+                  <span className={`material-symbols-outlined text-sm ${node.status === 'error' ? 'text-error' : 'text-tertiary'}`}>
                     warning
                   </span>
                 )}
@@ -263,26 +265,31 @@ export default function PlaygroundPage() {
               <div className="p-2 flex flex-col gap-1 text-[10px] font-mono text-on-surface-variant bg-surface-container-high rounded-b-md">
                 <div className="flex justify-between items-center">
                   <span>LATENCY</span>
-                  <span className={node.metrics.latency > 200 ? 'text-[var(--color-tertiary)] font-bold' : ''}>{node.metrics.latency}ms</span>
+                  <span className={node.metrics.latency > 200 ? 'text-tertiary font-bold' : ''}>{node.metrics.latency}ms</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span>ERROR</span>
                   <span className={node.metrics.errorRate > 1 ? 'text-error font-bold' : ''}>{node.metrics.errorRate}%</span>
                 </div>
               </div>
+
+              {/* Hover tooltip with expanded metrics */}
+              <div className="absolute -bottom-14 left-1/2 -translate-x-1/2 bg-surface-container-highest border border-outline-variant rounded-md px-3 py-1.5 text-[10px] font-mono text-on-surface-variant whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-200 shadow-xl z-40 invisible group-hover:visible">
+                {node.label} — {node.status.toUpperCase()}
+              </div>
             </div>
           ))}
         </div>
 
         {/* Right Panel - AI Assistant */}
-        <div className="w-80 border-l border-outline-variant bg-surface-container-low flex flex-col z-20">
+        <div className="w-80 border-l border-outline-variant bg-surface-container-low flex-col z-20 hidden lg:flex">
           <div className="p-4 border-b border-outline-variant font-medium flex items-center gap-2 text-secondary">
-            <span className="material-symbols-outlined">smart_toy</span>
+            <span className="material-symbols-outlined breathing-glow rounded-full">smart_toy</span>
             AI Assistant
           </div>
           <div className="flex-1 p-4 overflow-y-auto flex flex-col gap-4">
             
-            <div className="bg-surface-container rounded-lg p-3 border border-outline-variant">
+            <div className="bg-surface-container rounded-lg p-3 border border-outline-variant hover:border-primary/50 transition-all duration-200 hover:shadow-md">
               <div className="flex items-center gap-2 text-sm font-semibold mb-2 text-primary">
                 <span className="material-symbols-outlined text-[18px]">lightbulb</span>
                 Optimization Suggestion
@@ -291,13 +298,13 @@ export default function PlaygroundPage() {
                 <strong className="text-on-surface">User DB</strong> latency is spiking at {trafficVolume * 10} RPS. Consider adding a Read Replica or introducing an object cache layer to alleviate read pressure.
               </p>
               <div className="mt-3 flex gap-2">
-                <button className="flex-1 bg-primary-container text-on-surface text-xs font-medium py-1.5 rounded hover:bg-primary hover:text-surface transition-colors">
+                <button className="flex-1 bg-primary-container text-on-surface text-xs font-medium py-1.5 rounded hover:bg-primary hover:text-surface transition-all duration-200 active:scale-[0.97]">
                   Apply Cache
                 </button>
               </div>
             </div>
 
-            <div className="bg-surface-container rounded-lg p-3 border border-outline-variant">
+            <div className="bg-surface-container rounded-lg p-3 border border-outline-variant hover:border-secondary/50 transition-all duration-200 hover:shadow-md">
               <div className="flex items-center gap-2 text-sm font-semibold mb-2 text-secondary">
                 <span className="material-symbols-outlined text-[18px]">analytics</span>
                 Traffic Analysis
@@ -306,7 +313,7 @@ export default function PlaygroundPage() {
                 Current simulation shows potential bottlenecks in the <strong>Auth Service</strong> if traffic exceeds 800 RPS.
               </p>
               <div className="w-full bg-surface-container-highest rounded-full h-1.5 mb-1 overflow-hidden">
-                <div className="bg-secondary h-full rounded-full transition-all duration-300" style={{ width: `${trafficVolume}%` }}></div>
+                <div className="bg-secondary h-full rounded-full transition-all duration-500 ease-out" style={{ width: `${trafficVolume}%` }}></div>
               </div>
               <div className="flex justify-between text-[10px] text-outline">
                 <span>0 RPS</span>
@@ -319,10 +326,10 @@ export default function PlaygroundPage() {
       </div>
 
       {/* Bottom Panel - Simulation Controls */}
-      <div className="h-48 border-t border-outline-variant bg-surface-container-low flex z-20 p-4 gap-6 shrink-0">
+      <div className="h-auto lg:h-48 border-t border-outline-variant bg-surface-container-low flex flex-col lg:flex-row z-20 p-4 gap-6 shrink-0 overflow-y-auto">
         
         {/* Controls */}
-        <div className="flex flex-col gap-4 w-1/3">
+        <div className="flex flex-col gap-4 w-full lg:w-1/3">
           <div className="text-sm font-semibold flex items-center gap-2">
             <span className="material-symbols-outlined text-tertiary">tune</span>
             Simulation Controls
@@ -331,7 +338,7 @@ export default function PlaygroundPage() {
           <div className="flex flex-col gap-2">
             <div className="flex justify-between text-xs text-on-surface-variant">
               <span>Traffic Volume</span>
-              <span className="font-mono">{trafficVolume * 10} RPS</span>
+              <span className="font-mono text-primary font-semibold">{trafficVolume * 10} RPS</span>
             </div>
             <input 
               type="range" 
@@ -339,16 +346,16 @@ export default function PlaygroundPage() {
               max="100" 
               value={trafficVolume}
               onChange={(e) => setTrafficVolume(Number(e.target.value))}
-              className="w-full h-1.5 bg-surface-container-highest rounded-lg appearance-none cursor-pointer accent-primary"
+              className="w-full"
             />
           </div>
 
           <div className="flex gap-3 mt-auto">
-            <button className="flex-1 flex items-center justify-center gap-1 bg-primary-container text-on-surface text-sm font-medium py-2 rounded hover:bg-primary hover:text-surface transition-colors">
-              <span className="material-symbols-outlined text-[18px]">play_arrow</span>
+            <button className="flex-1 flex items-center justify-center gap-1 bg-primary-container text-on-surface text-sm font-medium py-2 rounded hover:bg-primary hover:text-surface hover:shadow-[0_0_15px_rgba(195,192,255,0.2)] transition-all duration-200 active:scale-[0.97] group/run">
+              <span className="material-symbols-outlined text-[18px] group-hover/run:animate-pulse">play_arrow</span>
               Run Test
             </button>
-            <button className="flex-1 flex items-center justify-center gap-1 bg-surface-container-high border border-outline-variant text-sm font-medium py-2 rounded hover:border-primary transition-colors">
+            <button className="flex-1 flex items-center justify-center gap-1 bg-surface-container-high border border-outline-variant text-sm font-medium py-2 rounded hover:border-primary hover:shadow-md transition-all duration-200 active:scale-[0.97]">
               <span className="material-symbols-outlined text-[18px]">save</span>
               Save State
             </button>
@@ -363,14 +370,14 @@ export default function PlaygroundPage() {
           </div>
           
           <div className="grid grid-cols-3 gap-4 h-full">
-            <div className="bg-surface-container rounded border border-outline-variant p-3 flex flex-col justify-center">
+            <div className="bg-surface-container rounded-lg border border-outline-variant p-3 flex flex-col justify-center bg-gradient-to-br from-primary/5 to-transparent hover:shadow-md transition-all duration-200">
               <span className="text-xs text-outline mb-1 font-medium">P99 LATENCY</span>
               <div className="flex items-end gap-2">
                 <span className="text-2xl font-mono text-on-surface">{(145 + (trafficVolume * 0.5)).toFixed(0)}</span>
                 <span className="text-xs text-on-surface-variant mb-1">ms</span>
               </div>
             </div>
-            <div className="bg-surface-container rounded border border-outline-variant p-3 flex flex-col justify-center">
+            <div className="bg-surface-container rounded-lg border border-outline-variant p-3 flex flex-col justify-center bg-gradient-to-br from-secondary/5 to-transparent hover:shadow-md transition-all duration-200">
               <span className="text-xs text-outline mb-1 font-medium">ERROR RATE</span>
               <div className="flex items-end gap-2">
                 <span className={`text-2xl font-mono ${trafficVolume > 80 ? 'text-error' : 'text-on-surface'}`}>
@@ -379,7 +386,7 @@ export default function PlaygroundPage() {
                 <span className="text-xs text-on-surface-variant mb-1">%</span>
               </div>
             </div>
-            <div className="bg-surface-container rounded border border-outline-variant p-3 flex flex-col justify-center">
+            <div className="bg-surface-container rounded-lg border border-outline-variant p-3 flex flex-col justify-center bg-gradient-to-br from-tertiary/5 to-transparent hover:shadow-md transition-all duration-200">
               <span className="text-xs text-outline mb-1 font-medium">ACTIVE NODES</span>
               <div className="flex items-end gap-2">
                 <span className="text-2xl font-mono text-on-surface">{nodes.length}</span>

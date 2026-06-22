@@ -1,4 +1,6 @@
-import React from 'react';
+"use client";
+
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 interface CourseCardProps {
@@ -12,6 +14,16 @@ interface CourseCardProps {
 }
 
 export function CourseCard({ title, description, icon, level, progress, color, href }: CourseCardProps) {
+  const [animatedProgress, setAnimatedProgress] = useState(0);
+
+  useEffect(() => {
+    // Trigger the progress animation after mount
+    const timer = setTimeout(() => {
+      setAnimatedProgress(progress);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [progress]);
+
   const progressColorMap = {
     primary: 'bg-primary',
     secondary: 'bg-secondary',
@@ -27,10 +39,10 @@ export function CourseCard({ title, description, icon, level, progress, color, h
   return (
     <div className="glass-panel p-6 flex flex-col h-full rounded-2xl border border-outline-variant hover:border-outline transition-all duration-300 relative overflow-hidden group hover:shadow-lg hover:-translate-y-1">
       {/* Subtle background glow */}
-      <div className={`absolute -right-12 -top-12 w-32 h-32 blur-[64px] opacity-20 group-hover:opacity-30 transition-opacity ${progressColorMap[color]}`} />
+      <div className={`absolute -right-12 -top-12 w-32 h-32 blur-[64px] opacity-20 group-hover:opacity-30 transition-opacity duration-500 ${progressColorMap[color]}`} />
       
       <div className="flex justify-between items-start mb-6 relative z-10">
-        <div className="w-14 h-14 rounded-xl bg-surface-container-high border border-outline-variant flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-inner">
+        <div className="w-14 h-14 rounded-xl bg-surface-container-high border border-outline-variant flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-inner">
           <span className={`material-symbols-outlined text-3xl ${iconColorMap[color]}`}>{icon}</span>
         </div>
         <span className="px-3 py-1.5 rounded-full text-xs font-semibold bg-surface-container border border-outline-variant text-on-surface-variant font-mono tracking-wide uppercase">
@@ -39,7 +51,7 @@ export function CourseCard({ title, description, icon, level, progress, color, h
       </div>
       
       <div className="mb-8 relative z-10 flex-grow">
-        <h3 className="text-xl font-bold text-on-surface mb-3 font-sans group-hover:text-primary transition-colors">{title}</h3>
+        <h3 className="text-xl font-bold text-on-surface mb-3 font-sans group-hover:text-primary transition-colors duration-200">{title}</h3>
         <p className="text-sm text-on-surface-variant line-clamp-3 leading-relaxed">{description}</p>
       </div>
       
@@ -51,16 +63,16 @@ export function CourseCard({ title, description, icon, level, progress, color, h
         <div className="h-2.5 w-full bg-surface-container-high rounded-full overflow-hidden mb-6 border border-outline-variant/50 shadow-inner">
           <div 
             className={`h-full rounded-full ${progressColorMap[color]} shadow-[0_0_10px_rgba(0,0,0,0.5)] transition-all duration-1000 ease-out`} 
-            style={{ width: `${progress}%` }}
+            style={{ width: `${animatedProgress}%` }}
           />
         </div>
         
         <Link 
           href={href}
-          className="w-full py-3.5 rounded-xl flex items-center justify-center gap-2 bg-surface-container hover:bg-surface-container-highest border border-outline-variant text-on-surface font-medium transition-all duration-300 hover:border-primary/50"
+          className="w-full py-3.5 rounded-xl flex items-center justify-center gap-2 bg-surface-container hover:bg-gradient-to-r hover:from-primary-container/30 hover:to-secondary-container/30 border border-outline-variant text-on-surface font-medium transition-all duration-300 hover:border-primary/50 hover:shadow-[0_0_15px_rgba(195,192,255,0.08)] active:scale-[0.98] group/btn"
         >
           {progress > 0 && progress < 100 ? 'Continue Path' : progress === 100 ? 'Review Path' : 'Start Path'}
-          <span className="material-symbols-outlined text-sm">
+          <span className="material-symbols-outlined text-sm group-hover/btn:translate-x-1 transition-transform duration-200">
             {progress === 100 ? 'replay' : 'arrow_forward'}
           </span>
         </Link>

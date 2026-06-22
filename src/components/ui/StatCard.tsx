@@ -10,7 +10,7 @@ interface StatCardProps {
 
 export function StatCard({ title, value, icon, trend, trendUp }: StatCardProps) {
   return (
-    <div className="glass-panel p-6 flex items-start justify-between rounded-xl border border-outline-variant shadow-lg hover:border-outline transition-colors group">
+    <div className="glass-panel p-6 flex items-start justify-between rounded-xl border border-outline-variant shadow-lg hover:border-outline hover:shadow-[0_0_25px_rgba(195,192,255,0.08)] transition-all duration-300 group">
       <div>
         <p className="text-sm font-medium text-on-surface-variant mb-2 font-sans tracking-wide uppercase">{title}</p>
         <div className="flex items-baseline gap-3">
@@ -25,7 +25,7 @@ export function StatCard({ title, value, icon, trend, trendUp }: StatCardProps) 
           )}
         </div>
       </div>
-      <div className="w-14 h-14 rounded-xl bg-surface-container-high flex items-center justify-center border border-outline-variant shadow-inner group-hover:scale-105 transition-transform duration-300">
+      <div className="w-14 h-14 rounded-xl bg-surface-container-high flex items-center justify-center border border-outline-variant shadow-inner group-hover:scale-105 group-hover:rotate-6 transition-all duration-300">
         <span className="material-symbols-outlined text-primary text-3xl">{icon}</span>
       </div>
     </div>

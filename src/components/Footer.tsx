@@ -1,30 +1,43 @@
 import Link from "next/link";
 
 export default function Footer() {
+  const footerLinks = [
+    { href: "#", label: "Documentation" },
+    { href: "#", label: "API" },
+    { href: "#", label: "Privacy" },
+    { href: "#", label: "Terms" },
+  ];
+
   return (
-    <footer className="bg-surface-container-lowest w-full py-lg border-t border-white/5 flex flex-col md:flex-row justify-between items-center px-margin mt-xl">
-      <div className="flex items-center gap-2 mb-4 md:mb-0">
-        <span className="material-symbols-outlined text-primary">architecture</span>
-        <span className="font-headline-md text-headline-md text-primary tracking-tight">SystemArchitect AI</span>
-      </div>
-      
-      <div className="flex flex-wrap justify-center gap-md font-body-md text-body-md">
-        <Link href="#" className="text-outline hover:text-on-surface hover:underline transition-all opacity-80 hover:opacity-100">
-          Documentation
+    <footer className="bg-surface-container-lowest w-full py-lg relative">
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-outline-variant/50 to-transparent" />
+
+      <div className="flex flex-col md:flex-row justify-between items-center gap-5 px-margin">
+        <Link href="/" className="flex items-center gap-2 group">
+          <span className="material-symbols-outlined text-primary group-hover:rotate-12 transition-transform duration-300">
+            architecture
+          </span>
+          <span className="font-headline-md text-xl font-bold text-primary tracking-tight">
+            SystemArchitect <span className="text-secondary">AI</span>
+          </span>
         </Link>
-        <Link href="#" className="text-outline hover:text-on-surface hover:underline transition-all opacity-80 hover:opacity-100">
-          API
-        </Link>
-        <Link href="#" className="text-outline hover:text-on-surface hover:underline transition-all opacity-80 hover:opacity-100">
-          Privacy
-        </Link>
-        <Link href="#" className="text-outline hover:text-on-surface hover:underline transition-all opacity-80 hover:opacity-100">
-          Terms
-        </Link>
-      </div>
-      
-      <div className="mt-4 md:mt-0 font-body-md text-body-md text-outline opacity-80">
-        © 2026 SystemArchitect AI. Built for scale.
+
+        <div className="flex flex-wrap justify-center gap-md font-body-md text-body-md">
+          {footerLinks.map((link) => (
+            <Link
+              key={link.label}
+              href={link.href}
+              className="text-outline animated-underline hover:text-on-surface transition-all duration-200 opacity-80 hover:opacity-100"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
+
+        <div className="font-body-md text-sm text-outline opacity-80 flex items-center gap-2">
+          <span className="inline-block w-2 h-2 rounded-full bg-primary/60 pulse-node" />
+          © 2026 SystemArchitect AI
+        </div>
       </div>
     </footer>
   );

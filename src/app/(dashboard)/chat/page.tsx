@@ -30,7 +30,7 @@ export default function ChatPage() {
       content: "A reverse proxy acts as an intermediary for requests from clients seeking resources from servers. Here's a breakdown tailored to your current mode:",
       richContent: (
         <div className="mt-4 flex flex-col gap-4">
-          <div className="bg-surface-container p-4 rounded-xl border border-outline-variant">
+          <div className="bg-surface-container p-4 rounded-xl border border-outline-variant hover:border-outline transition-colors duration-200 hover:shadow-lg">
             <div className="flex items-center gap-2 mb-2">
               <span className="material-symbols-outlined text-secondary">lightbulb</span>
               <h4 className="font-semibold text-on-surface text-sm">Analogy</h4>
@@ -39,7 +39,7 @@ export default function ChatPage() {
               Think of a reverse proxy like a receptionist at a large corporate building. When visitors (clients) arrive, they talk to the receptionist. The receptionist decides which department or person (internal servers) should handle the request and forwards it, without the visitor ever needing to know the layout of the building.
             </p>
           </div>
-          <div className="bg-surface-container-high rounded-xl overflow-hidden border border-outline-variant font-mono text-sm">
+          <div className="bg-surface-container-high rounded-xl overflow-hidden border border-outline-variant font-mono text-sm hover:border-outline transition-colors duration-200 hover:shadow-lg">
             <div className="bg-surface-container-highest px-4 py-2 border-b border-outline-variant flex justify-between items-center text-xs text-on-surface-variant">
               <span>Architecture Flow</span>
               <span className="material-symbols-outlined text-[16px]">account_tree</span>
@@ -49,9 +49,9 @@ export default function ChatPage() {
             </div>
           </div>
           <div className="flex gap-2 mt-2">
-            <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-medium border border-primary/20">Load Balancing</span>
-            <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-medium border border-primary/20">Security</span>
-            <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-medium border border-primary/20">Caching</span>
+            <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-medium border border-primary/20 hover:bg-primary/20 transition-colors cursor-pointer">Load Balancing</span>
+            <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-medium border border-primary/20 hover:bg-primary/20 transition-colors cursor-pointer">Security</span>
+            <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-medium border border-primary/20 hover:bg-primary/20 transition-colors cursor-pointer">Caching</span>
           </div>
         </div>
       ),
@@ -67,14 +67,14 @@ export default function ChatPage() {
   }, [sampleMessages]);
 
   return (
-    <div className="flex flex-col h-[calc(100vh-4rem)] bg-surface relative">
+    <div className="flex flex-col h-[calc(100vh-72px)] bg-surface relative">
       {/* Main Chat Area */}
       <div className="flex-1 overflow-y-auto p-4 md:p-8 scroll-smooth pb-32">
         <div className="max-w-4xl mx-auto flex flex-col gap-8">
           
-          {/* Empty State / Topics (Shown at the top before scrolling far, or as part of the conversation starter) */}
-          <div className="mb-8 mt-4 text-center flex flex-col items-center">
-            <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 border border-primary/20 shadow-[0_0_30px_rgba(var(--color-primary),0.15)] pulse-node">
+          {/* Empty State */}
+          <div className="mb-8 mt-4 text-center flex flex-col items-center fade-in-up">
+            <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 border border-primary/20 shadow-[0_0_30px_rgba(195,192,255,0.15)] breathing-glow">
               <span className="material-symbols-outlined text-primary text-3xl">smart_toy</span>
             </div>
             <h1 className="text-3xl font-bold text-on-surface mb-3 tracking-tight">SystemArchitect AI</h1>
@@ -85,7 +85,7 @@ export default function ChatPage() {
               {topics.map((topic) => (
                 <button
                   key={topic}
-                  className="px-4 py-2 rounded-full border border-outline-variant bg-surface-container hover:bg-surface-container-high hover:border-outline text-on-surface-variant hover:text-on-surface transition-all text-sm font-medium flex items-center gap-2"
+                  className="px-4 py-2 rounded-full border border-outline-variant bg-surface-container hover:bg-surface-container-high hover:border-primary/50 hover:shadow-[0_0_15px_rgba(195,192,255,0.08)] text-on-surface-variant hover:text-on-surface transition-all duration-200 text-sm font-medium flex items-center gap-2 hover:scale-105 active:scale-95"
                   onClick={() => setInput(`Tell me about ${topic}`)}
                 >
                   <span className="material-symbols-outlined text-[18px]">search</span>
@@ -106,7 +106,7 @@ export default function ChatPage() {
                 <div className={`shrink-0 w-10 h-10 rounded-full flex items-center justify-center border ${
                   msg.role === "user" 
                     ? "bg-surface-container-high border-outline-variant" 
-                    : "bg-primary/10 border-primary/20"
+                    : "bg-primary/10 border-primary/20 breathing-glow"
                 }`}>
                   <span className={`material-symbols-outlined text-xl ${
                     msg.role === "user" ? "text-on-surface" : "text-primary"
@@ -121,8 +121,8 @@ export default function ChatPage() {
                 }`}>
                   <div className={`px-5 py-3.5 rounded-2xl text-sm md:text-base leading-relaxed ${
                     msg.role === "user"
-                      ? "bg-primary text-surface-container-lowest rounded-tr-sm font-medium"
-                      : "bg-surface-container border border-outline-variant text-on-surface rounded-tl-sm shadow-sm"
+                      ? "bg-gradient-to-br from-primary to-primary/90 text-surface-container-lowest rounded-tr-sm font-medium shadow-md"
+                      : "bg-surface-container border border-outline-variant text-on-surface rounded-tl-sm shadow-sm border-l-2 border-l-primary/40"
                   }`}>
                     {msg.content}
                   </div>
@@ -143,7 +143,7 @@ export default function ChatPage() {
       <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 bg-gradient-to-t from-surface via-surface/95 to-transparent backdrop-blur-sm">
         <div className="max-w-4xl mx-auto">
           {/* Input Box Container */}
-          <div className="glass-panel bg-surface-container border border-outline-variant rounded-2xl p-2 shadow-2xl relative overflow-hidden group focus-within:border-primary/50 focus-within:ring-1 focus-within:ring-primary/50 transition-all duration-300">
+          <div className="glass-panel bg-surface-container border border-outline-variant rounded-2xl p-2 shadow-2xl relative overflow-hidden group focus-within:border-primary/50 focus-within:ring-1 focus-within:ring-primary/30 focus-within:shadow-[0_0_25px_rgba(195,192,255,0.1)] transition-all duration-300">
             
             {/* Top Row: Mode Toggle & Tools */}
             <div className="flex items-center justify-between px-3 py-2 border-b border-outline-variant/50 mb-2">
@@ -152,7 +152,7 @@ export default function ChatPage() {
                   <button
                     key={m}
                     onClick={() => setMode(m)}
-                    className={`px-3 py-1 rounded-md text-xs font-semibold transition-all ${
+                    className={`px-3 py-1 rounded-md text-xs font-semibold transition-all duration-200 ${
                       mode === m
                         ? "bg-primary text-surface-container-lowest shadow-sm"
                         : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest"
@@ -163,10 +163,10 @@ export default function ChatPage() {
                 ))}
               </div>
               <div className="flex items-center gap-2 text-on-surface-variant">
-                <button className="p-1.5 hover:bg-surface-container-high rounded-md transition-colors tooltip-trigger" title="Attach Architecture Context">
+                <button className="p-1.5 hover:bg-surface-container-high rounded-md transition-all duration-200 hover:text-on-surface" title="Attach Architecture Context">
                   <span className="material-symbols-outlined text-[18px]">attachment</span>
                 </button>
-                <button className="p-1.5 hover:bg-surface-container-high rounded-md transition-colors tooltip-trigger" title="Project Settings">
+                <button className="p-1.5 hover:bg-surface-container-high rounded-md transition-all duration-200 hover:text-on-surface" title="Project Settings">
                   <span className="material-symbols-outlined text-[18px]">tune</span>
                 </button>
               </div>
@@ -183,7 +183,6 @@ export default function ChatPage() {
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
-                    // Handle submit
                     if (input.trim()) setInput("");
                   }
                 }}
@@ -191,7 +190,7 @@ export default function ChatPage() {
               <button
                 className={`w-10 h-10 mb-1 rounded-xl flex items-center justify-center transition-all duration-300 ${
                   input.trim()
-                    ? "bg-primary text-surface-container-lowest hover:bg-primary/90 shadow-md"
+                    ? "bg-primary text-surface-container-lowest hover:bg-primary/90 shadow-md hover:shadow-[0_0_15px_rgba(195,192,255,0.3)] hover:scale-105 active:scale-95"
                     : "bg-surface-container-high text-outline cursor-not-allowed"
                 }`}
                 disabled={!input.trim()}
@@ -201,7 +200,7 @@ export default function ChatPage() {
             </div>
             
             {/* Subtle animated gradient line at bottom */}
-            <div className="absolute bottom-0 left-0 h-[2px] w-full bg-gradient-to-r from-transparent via-primary/30 to-transparent opacity-0 group-focus-within:opacity-100 transition-opacity"></div>
+            <div className="absolute bottom-0 left-0 h-[2px] w-full bg-gradient-to-r from-transparent via-primary/30 to-transparent opacity-0 group-focus-within:opacity-100 transition-opacity duration-500"></div>
           </div>
           
           <div className="text-center mt-3">

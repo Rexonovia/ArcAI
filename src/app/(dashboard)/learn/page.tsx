@@ -10,13 +10,13 @@ export default function LearningPathsPage() {
       <div className="absolute bottom-0 right-1/4 w-[30rem] h-[30rem] bg-secondary opacity-5 blur-[128px] rounded-full pointer-events-none" />
 
       <div className="max-w-7xl mx-auto relative z-10">
-        <header className="mb-12">
+        <header className="mb-12 fade-in-up">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
-              <span className="material-symbols-outlined text-primary pulse-node">school</span>
+            <div className="w-10 h-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center breathing-glow">
+              <span className="material-symbols-outlined text-primary">school</span>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
-              Learning <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Paths</span>
+              Learning <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-primary gradient-text-animated">Paths</span>
             </h1>
           </div>
           <p className="text-lg text-on-surface-variant max-w-2xl font-sans">
@@ -25,7 +25,7 @@ export default function LearningPathsPage() {
         </header>
 
         {/* Stats Row */}
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16 fade-in-up-delay-1">
           <StatCard 
             title="Learning Streak" 
             value="14 Days" 
@@ -50,7 +50,7 @@ export default function LearningPathsPage() {
         </section>
 
         {/* Course Tracks Section */}
-        <section>
+        <section className="fade-in-up-delay-2">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-2xl font-bold flex items-center gap-3">
               <span className="material-symbols-outlined text-on-surface-variant">route</span>
