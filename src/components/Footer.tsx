@@ -2,8 +2,6 @@ import Link from "next/link";
 
 export default function Footer() {
   const footerLinks = [
-    { href: "#", label: "Documentation" },
-    { href: "#", label: "API" },
     { href: "#", label: "Privacy" },
     { href: "#", label: "Terms" },
   ];
@@ -18,7 +16,7 @@ export default function Footer() {
             architecture
           </span>
           <span className="font-headline-md text-xl font-bold text-primary tracking-tight">
-            SystemArchitect <span className="text-secondary">AI</span>
+            Arc <span className="text-secondary">AI</span>
           </span>
         </Link>
 
@@ -36,7 +34,7 @@ export default function Footer() {
 
         <div className="font-body-md text-sm text-outline opacity-80 flex items-center gap-2">
           <span className="inline-block w-2 h-2 rounded-full bg-primary/60 pulse-node" />
-          © 2026 SystemArchitect AI
+          © 2026 ArcAI
         </div>
       </div>
     </footer>

@@ -66,9 +66,15 @@ export default function HomePage() {
     <>
       <Navbar />
       <main className="home-shell">
+        <div className="mesh-bg" aria-hidden="true">
+          <div className="mesh-blob-1" />
+          <div className="mesh-blob-2" />
+        </div>
         <div className="home-noise" aria-hidden="true" />
+        <div className="home-grid-bg" aria-hidden="true" />
         <div className="home-orb home-orb-one" aria-hidden="true" />
         <div className="home-orb home-orb-two" aria-hidden="true" />
+        <div className="hero-glow-bg" />
 
         <section className="home-section grid min-h-[760px] items-center gap-14 pb-20 pt-36 lg:grid-cols-[0.92fr_1.08fr] lg:pt-32">
           <div className="relative z-10 min-w-0 max-w-[42rem] text-center lg:text-left fade-in-up">
@@ -82,9 +88,9 @@ export default function HomePage() {
               </span>
             </div>
 
-            <h1 className="max-w-[680px] text-[clamp(3.25rem,6.3vw,5.85rem)] font-extrabold leading-[0.96] tracking-[-0.065em] text-on-surface drop-shadow-sm">
+            <h1 className="max-w-[680px] text-[clamp(3.25rem,6.3vw,5.85rem)] font-extrabold leading-[0.96] tracking-[-0.065em] text-on-surface drop-shadow-sm text-glow-premium">
               See what happens{" "}
-              <span className="home-gradient-text drop-shadow-md">after the click.</span>
+              <span className="gradient-text-animated drop-shadow-md">after the click.</span>
             </h1>
 
             <p className="mt-7 max-w-[36rem] text-lg leading-8 text-on-surface-variant md:text-xl">
@@ -123,7 +129,7 @@ export default function HomePage() {
           </div>
 
           <div className="relative z-10 min-w-0 fade-in-up-delay-2">
-            <div className="architecture-window">
+            <div className="architecture-window animate-float">
               <div className="architecture-toolbar">
                 <div className="flex gap-1.5" aria-hidden="true">
                   <span className="h-2.5 w-2.5 rounded-full bg-rose-300/70" />
@@ -222,18 +228,20 @@ export default function HomePage() {
         <section className="home-section pb-24 relative z-10">
           <div className="system-strip rounded-2xl bg-surface-container/30 backdrop-blur-md border border-white/5 shadow-2xl overflow-hidden relative">
             <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-secondary/5 pointer-events-none" />
-            <p className="font-code-sm text-[10px] font-semibold uppercase tracking-[0.2em] text-outline z-10">
+            <p className="font-code-sm text-[10px] font-semibold uppercase tracking-[0.2em] text-outline z-10 shrink-0 hidden md:block">
               Explore systems you already know
             </p>
-            <div className="flex flex-wrap items-center justify-center gap-x-9 gap-y-5 lg:justify-end z-10">
-              {systems.map((system) => (
-                <div key={system.name} className="flex items-center gap-2 text-sm font-semibold text-on-surface-variant transition-colors hover:text-white cursor-default group">
-                  <span className={`material-symbols-outlined text-[20px] ${system.color} transition-transform group-hover:scale-110 drop-shadow-md`}>
-                    {system.icon}
-                  </span>
-                  {system.name}
-                </div>
-              ))}
+            <div className="marquee-container z-10 relative">
+              <div className="marquee-content flex items-center gap-x-12 px-6">
+                {[...systems, ...systems, ...systems].map((system, i) => (
+                  <div key={`${system.name}-${i}`} className="flex items-center gap-2 text-sm font-semibold text-on-surface-variant transition-colors hover:text-white cursor-default group shrink-0">
+                    <span className={`material-symbols-outlined text-[20px] ${system.color} transition-transform group-hover:scale-110 drop-shadow-md`}>
+                      {system.icon}
+                    </span>
+                    {system.name}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
@@ -254,10 +262,10 @@ export default function HomePage() {
           <div className="relative grid gap-6 md:grid-cols-3">
             <div className="absolute inset-0 rounded-full bg-primary/5 blur-[100px] pointer-events-none" />
             {learningLoop.map((item) => (
-              <article key={item.number} className="learning-step group glass-card relative overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10">
+              <article key={item.number} className="learning-step spotlight-card group glass-card relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
                 <div className="mb-9 flex items-center justify-between relative z-10">
-                  <span className="material-symbols-outlined text-4xl text-primary drop-shadow-[0_0_12px_rgba(195,192,255,0.4)] transition-transform duration-500 group-hover:scale-110">{item.icon}</span>
+                  <span className="material-symbols-outlined text-4xl text-primary drop-shadow-[0_0_12px_rgba(195,192,255,0.4)] transition-transform duration-500 group-hover:scale-110" style={{ animation: 'floatIcon 4s ease-in-out infinite' }}>{item.icon}</span>
                   <span className="font-code-sm text-xs font-bold text-outline/50 transition-colors duration-300 group-hover:text-primary/70">{item.number}</span>
                 </div>
                 <h3 className="relative z-10 text-xl font-bold tracking-tight text-on-surface transition-colors duration-300 group-hover:text-primary">{item.title}</h3>
@@ -304,17 +312,16 @@ export default function HomePage() {
         </section>
 
         <section className="home-section py-24">
-          <div className="home-cta relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-gradient-to-br from-surface-container/80 to-surface/40 p-12 shadow-2xl backdrop-blur-xl md:p-16">
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/20 via-surface/0 to-transparent pointer-events-none" />
-            <div className="home-cta-grid opacity-30" aria-hidden="true" />
-            
+          <div className="home-cta relative overflow-hidden rounded-[2.5rem] p-12 md:p-16">
+            <div className="home-cta-grid opacity-20" aria-hidden="true" />
+
             <div className="relative z-10 mx-auto max-w-[42rem] text-center">
               <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl border border-white/5 bg-gradient-to-br from-primary/20 to-secondary/20 shadow-inner">
                 <span className="material-symbols-outlined text-4xl text-primary drop-shadow-md">architecture</span>
               </div>
               <p className="home-eyebrow">Your next “aha” is one request away</p>
               <h2 className="mt-4 text-4xl font-extrabold leading-tight tracking-[-0.045em] text-on-surface drop-shadow-md md:text-5xl">
-                Stop memorizing system design. <span className="home-gradient-text drop-shadow-lg">Start seeing it.</span>
+                Stop memorizing system design. <span className="gradient-text-animated drop-shadow-lg">Start seeing it.</span>
               </h2>
               <p className="mx-auto mt-5 max-w-[36rem] text-lg leading-8 text-on-surface-variant">
                 Open a real architecture, follow the data, and build the
