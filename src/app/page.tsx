@@ -88,7 +88,7 @@ export default function HomePage() {
               </span>
             </div>
 
-            <h1 className="max-w-[680px] text-[clamp(3.25rem,6.3vw,5.85rem)] font-extrabold leading-[0.96] tracking-[-0.065em] text-on-surface drop-shadow-sm text-glow-premium">
+            <h1 className="max-w-[680px] text-[clamp(4rem,8vw,7.5rem)] font-extrabold leading-[0.96] tracking-[-0.065em] text-on-surface drop-shadow-sm text-glow-premium">
               See what happens{" "}
               <span className="gradient-text-animated drop-shadow-md">after the click.</span>
             </h1>
@@ -99,17 +99,17 @@ export default function HomePage() {
               trade-off with an AI staff engineer beside you.
             </p>
 
-            <div className="mt-9 flex flex-col gap-4 sm:flex-row sm:justify-center lg:justify-start">
-              <Link href="/learn" className="home-primary-button group shadow-lg shadow-primary/20 hover:shadow-primary/40">
+            <div className="mt-12 flex flex-col gap-6 sm:flex-row sm:items-center lg:justify-start">
+              <Link href="/learn" className="home-primary-button group shadow-[0_0_40px_rgba(79,70,229,0.4)] hover:shadow-[0_0_60px_rgba(79,70,229,0.6)] px-8 py-4 text-lg rounded-full">
                 Start with Instagram
-                <span className="material-symbols-outlined text-[19px] transition-transform group-hover:translate-x-1">
+                <span className="material-symbols-outlined text-[22px] transition-transform group-hover:translate-x-1">
                   arrow_forward
                 </span>
               </Link>
-              <Link href="/explore" className="home-secondary-button group backdrop-blur-md">
+              <Link href="/explore" className="font-semibold text-outline hover:text-white transition-colors flex items-center gap-2 group">
                 Browse all systems
-                <span className="material-symbols-outlined text-[19px] text-outline transition-colors group-hover:text-on-surface">
-                  grid_view
+                <span className="material-symbols-outlined text-[18px] transition-transform group-hover:translate-x-1">
+                  east
                 </span>
               </Link>
             </div>
@@ -225,17 +225,16 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="home-section pb-24 relative z-10">
-          <div className="system-strip rounded-2xl bg-surface-container/30 backdrop-blur-md border border-white/5 shadow-2xl overflow-hidden relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-secondary/5 pointer-events-none" />
+        <section className="relative z-10 w-full overflow-hidden border-y border-white/5 bg-surface/50 backdrop-blur-md">
+          <div className="system-strip">
             <p className="font-code-sm text-[10px] font-semibold uppercase tracking-[0.2em] text-outline z-10 shrink-0 hidden md:block">
               Explore systems you already know
             </p>
             <div className="marquee-container z-10 relative">
-              <div className="marquee-content flex items-center gap-x-12 px-6">
+              <div className="marquee-content flex items-center gap-x-16 px-8">
                 {[...systems, ...systems, ...systems].map((system, i) => (
-                  <div key={`${system.name}-${i}`} className="flex items-center gap-2 text-sm font-semibold text-on-surface-variant transition-colors hover:text-white cursor-default group shrink-0">
-                    <span className={`material-symbols-outlined text-[20px] ${system.color} transition-transform group-hover:scale-110 drop-shadow-md`}>
+                  <div key={`${system.name}-${i}`} className="flex items-center gap-3 text-base font-semibold text-on-surface-variant transition-colors hover:text-white cursor-default group shrink-0">
+                    <span className={`material-symbols-outlined text-[24px] ${system.color} transition-transform group-hover:scale-110 drop-shadow-md`}>
                       {system.icon}
                     </span>
                     {system.name}
@@ -259,17 +258,17 @@ export default function HomePage() {
               you can see, test, and question.
             </p>
           </div>
-          <div className="relative grid gap-6 md:grid-cols-3">
+          <div className="bento-grid mt-14 relative">
             <div className="absolute inset-0 rounded-full bg-primary/5 blur-[100px] pointer-events-none" />
-            {learningLoop.map((item) => (
-              <article key={item.number} className="learning-step spotlight-card group glass-card relative overflow-hidden">
+            {learningLoop.map((item, idx) => (
+              <article key={item.number} className={`learning-step spotlight-card group glass-card relative overflow-hidden ${idx === 0 ? 'bento-large' : ''}`}>
                 <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                <div className="mb-9 flex items-center justify-between relative z-10">
-                  <span className="material-symbols-outlined text-4xl text-primary drop-shadow-[0_0_12px_rgba(195,192,255,0.4)] transition-transform duration-500 group-hover:scale-110" style={{ animation: 'floatIcon 4s ease-in-out infinite' }}>{item.icon}</span>
+                <div className={`mb-9 flex items-center justify-between relative z-10 ${idx === 0 ? 'mb-16' : ''}`}>
+                  <span className={`material-symbols-outlined text-primary drop-shadow-[0_0_12px_rgba(195,192,255,0.4)] transition-transform duration-500 group-hover:scale-110 ${idx === 0 ? 'text-6xl' : 'text-4xl'}`} style={{ animation: 'floatIcon 4s ease-in-out infinite' }}>{item.icon}</span>
                   <span className="font-code-sm text-xs font-bold text-outline/50 transition-colors duration-300 group-hover:text-primary/70">{item.number}</span>
                 </div>
-                <h3 className="relative z-10 text-xl font-bold tracking-tight text-on-surface transition-colors duration-300 group-hover:text-primary">{item.title}</h3>
-                <p className="relative z-10 mt-3 text-sm leading-6 text-on-surface-variant">{item.copy}</p>
+                <h3 className={`relative z-10 font-bold tracking-tight text-on-surface transition-colors duration-300 group-hover:text-primary ${idx === 0 ? 'text-3xl' : 'text-xl'}`}>{item.title}</h3>
+                <p className={`relative z-10 mt-4 leading-relaxed text-on-surface-variant ${idx === 0 ? 'text-lg max-w-[80%]' : 'text-sm'}`}>{item.copy}</p>
               </article>
             ))}
           </div>
@@ -287,49 +286,61 @@ export default function HomePage() {
               <span className="material-symbols-outlined text-[18px] transition-transform group-hover:translate-x-1">arrow_forward</span>
             </Link>
           </div>
-          <div className="relative z-10 grid gap-6 lg:grid-cols-3">
-            {paths.map((path) => (
-              <Link key={path.title} href={path.href} className="path-card group relative overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
-                <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/40 to-transparent opacity-0 transition-opacity duration-500 pointer-events-none group-hover:opacity-100" />
-                <div className={`path-card-visual path-card-${path.color} transition-transform duration-700 ease-out group-hover:scale-105`}>
-                  <div className="path-card-grid" />
-                  <span className="material-symbols-outlined path-card-icon drop-shadow-lg transition-transform duration-500 group-hover:scale-110">{path.icon}</span>
-                  <span className="path-card-chip border border-white/10 bg-black/40 font-bold backdrop-blur-md">{path.stat}</span>
-                </div>
-                <div className="relative z-20 bg-gradient-to-b from-surface/90 to-surface p-7">
-                  <p className="font-code-sm text-[10px] font-bold uppercase tracking-[0.2em] text-outline/80 transition-colors group-hover:text-primary">{path.eyebrow}</p>
-                  <div className="mt-3 flex items-start justify-between gap-4">
-                    <h3 className="text-xl font-bold leading-7 tracking-tight text-on-surface transition-colors group-hover:text-white">{path.title}</h3>
-                    <div className="flex h-8 w-8 -translate-x-4 transform items-center justify-center rounded-full bg-white/5 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
-                      <span className="material-symbols-outlined text-[18px] text-primary">arrow_forward</span>
-                    </div>
+          <div className="relative z-10 flex flex-col">
+            {paths.map((path, idx) => (
+              <div key={path.title} className={`path-block ${idx % 2 !== 0 ? 'path-block-reverse' : ''}`}>
+                <div className="path-block-visual group">
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                  <span className={`material-symbols-outlined path-block-icon-bg transition-transform duration-700 group-hover:scale-110 group-hover:rotate-0 text-${path.color}`}>{path.icon}</span>
+                  
+                  {/* Decorative glass elements inside visual */}
+                  <div className="relative z-10 p-8 glass-panel rounded-2xl border border-white/10 shadow-2xl backdrop-blur-xl transform transition-transform duration-500 group-hover:translate-y-[-10px]">
+                     <div className="flex items-center gap-3 mb-4">
+                       <span className={`material-symbols-outlined text-3xl text-${path.color}`}>{path.icon}</span>
+                       <span className="font-code-sm text-xs font-bold px-3 py-1 bg-white/5 rounded-full border border-white/10">{path.stat}</span>
+                     </div>
+                     <div className="h-2 w-32 bg-white/10 rounded-full overflow-hidden">
+                       <div className={`h-full w-2/3 bg-primary rounded-full`} />
+                     </div>
                   </div>
-                  <p className="line-clamp-2 mt-3 text-sm leading-6 text-on-surface-variant">{path.copy}</p>
                 </div>
-              </Link>
+                <div className="px-6 lg:px-12">
+                  <p className="font-code-sm text-[10px] font-bold uppercase tracking-[0.2em] text-outline/80 mb-4">{path.eyebrow}</p>
+                  <h3 className="text-3xl lg:text-4xl font-extrabold leading-tight tracking-tight text-on-surface mb-6">{path.title}</h3>
+                  <p className="text-lg leading-8 text-on-surface-variant mb-8">{path.copy}</p>
+                  <Link href={path.href} className="inline-flex items-center gap-2 font-bold text-primary hover:text-secondary transition-colors group">
+                    Start this lab
+                    <span className="material-symbols-outlined text-[18px] transition-transform group-hover:translate-x-1">arrow_forward</span>
+                  </Link>
+                </div>
+              </div>
             ))}
           </div>
         </section>
 
-        <section className="home-section py-24">
-          <div className="home-cta relative overflow-hidden rounded-[2.5rem] p-12 md:p-16">
-            <div className="home-cta-grid opacity-20" aria-hidden="true" />
-
-            <div className="relative z-10 mx-auto max-w-[42rem] text-center">
-              <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl border border-white/5 bg-gradient-to-br from-primary/20 to-secondary/20 shadow-inner">
-                <span className="material-symbols-outlined text-4xl text-primary drop-shadow-md">architecture</span>
+        <section className="home-section py-32 max-w-[56rem] mx-auto">
+          <div className="terminal-window">
+            <div className="terminal-header">
+              <div className="terminal-dot bg-rose-500" />
+              <div className="terminal-dot bg-amber-400" />
+              <div className="terminal-dot bg-emerald-500" />
+              <span className="ml-4 font-code-sm text-xs text-outline opacity-60">guest@arc-ai: ~/simulation</span>
+            </div>
+            <div className="terminal-body bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-surface/0 to-transparent">
+              <div className="mb-8 font-code-sm text-primary flex items-center gap-3">
+                <span className="text-secondary">$</span> ./run_simulation --mode=interactive
+                <span className="inline-block w-2 h-4 bg-primary animate-pulse" />
               </div>
-              <p className="home-eyebrow">Your next “aha” is one request away</p>
-              <h2 className="mt-4 text-4xl font-extrabold leading-tight tracking-[-0.045em] text-on-surface drop-shadow-md md:text-5xl">
-                Stop memorizing system design. <span className="gradient-text-animated drop-shadow-lg">Start seeing it.</span>
+              <h2 className="text-3xl md:text-5xl font-extrabold leading-tight tracking-tight text-on-surface mb-6">
+                Stop memorizing design. <br/><span className="text-glow-premium text-white">Start tracing it.</span>
               </h2>
-              <p className="mx-auto mt-5 max-w-[36rem] text-lg leading-8 text-on-surface-variant">
+              <p className="text-lg text-on-surface-variant mb-10 max-w-[38rem]">
                 Open a real architecture, follow the data, and build the
                 intuition that sticks through interviews and production.
               </p>
-              <Link href="/learn" className="home-primary-button group mt-10 inline-flex px-8 py-4 text-base shadow-[0_0_40px_rgba(79,70,229,0.3)] hover:shadow-[0_0_60px_rgba(79,70,229,0.5)]">
-                Begin your first lesson
-                <span className="material-symbols-outlined text-[20px] transition-transform group-hover:translate-x-1">arrow_forward</span>
+              <Link href="/learn" className="home-primary-button group inline-flex px-8 py-4 text-base rounded-lg shadow-[0_0_30px_rgba(79,70,229,0.2)] hover:shadow-[0_0_50px_rgba(79,70,229,0.4)]">
+                Initialize Environment
+                <span className="material-symbols-outlined text-[20px] transition-transform group-hover:translate-x-1">terminal</span>
               </Link>
             </div>
           </div>
