@@ -1,69 +1,22 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
+import { useChat } from "ai/react";
 
 type ChatMode = "Beginner" | "Technical" | "PM";
 
-interface Message {
-  id: string;
-  role: "user" | "ai";
-  content: string;
-  richContent?: React.ReactNode;
-}
-
 export default function ChatPage() {
   const [mode, setMode] = useState<ChatMode>("Technical");
-  const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
+    api: "/api/chat",
+    body: { mode }
+  });
 
   const topics = ["APIs", "Caching", "Databases", "Security", "Microservices", "System Design"];
 
-  const sampleMessages: Message[] = [
-    {
-      id: "1",
-      role: "user",
-      content: "Can you explain how a reverse proxy works? I'm trying to understand its role in our new architecture.",
-    },
-    {
-      id: "2",
-      role: "ai",
-      content: "A reverse proxy acts as an intermediary for requests from clients seeking resources from servers. Here's a breakdown tailored to your current mode:",
-      richContent: (
-        <div className="mt-4 flex flex-col gap-4">
-          <div className="glass-card bg-white/[0.02] p-5 rounded-2xl border border-white/5 transition-all duration-300 hover:border-white/10 hover:shadow-lg">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="material-symbols-outlined text-secondary text-xl">lightbulb</span>
-              <h4 className="font-semibold text-on-surface text-sm uppercase tracking-wider">Analogy</h4>
-            </div>
-            <p className="text-on-surface-variant text-sm leading-relaxed">
-              Think of a reverse proxy like a receptionist at a large corporate building. When visitors (clients) arrive, they talk to the receptionist. The receptionist decides which department or person (internal servers) should handle the request and forwards it, without the visitor ever needing to know the layout of the building.
-            </p>
-          </div>
-          <div className="terminal-window rounded-xl overflow-hidden border border-white/10 font-mono text-sm shadow-xl">
-            <div className="terminal-header py-2 px-4 flex justify-between items-center text-xs text-outline opacity-80">
-              <div className="flex items-center gap-2">
-                <div className="terminal-dot bg-rose-500 w-2.5 h-2.5" />
-                <div className="terminal-dot bg-amber-400 w-2.5 h-2.5" />
-                <div className="terminal-dot bg-emerald-500 w-2.5 h-2.5" />
-                <span className="ml-2 font-code-sm uppercase tracking-widest">Architecture Flow</span>
-              </div>
-              <span className="material-symbols-outlined text-[16px]">account_tree</span>
-            </div>
-            <div className="p-5 bg-[#0a0a0f] text-secondary whitespace-pre overflow-x-auto font-code-sm text-[13px] leading-loose">
-              <span className="text-emerald-400">Client</span>  ──&gt;  <span className="text-primary">[ Reverse Proxy ]</span>  ──&gt;  Server A
-                                 ──&gt;  Server B
-                                 ──&gt;  Server C
-            </div>
-          </div>
-          <div className="flex flex-wrap gap-2 mt-2">
-            {["Load Balancing", "Security", "Caching"].map(tag => (
-               <span key={tag} className="bg-primary/10 text-primary px-3 py-1.5 rounded-full text-[11px] font-bold tracking-wide uppercase border border-primary/20 transition-colors cursor-pointer hover:bg-primary/20 hover:border-primary/40">{tag}</span>
-            ))}
-          </div>
-        </div>
-      ),
-    },
-  ];
+
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -71,7 +24,7 @@ export default function ChatPage() {
 
   useEffect(() => {
     scrollToBottom();
-  }, [sampleMessages]);
+  }, [messages]);
 
   return (
     <div className="flex flex-col h-[calc(100vh-72px)] bg-surface relative overflow-hidden">
@@ -96,7 +49,9 @@ export default function ChatPage() {
                 <button
                   key={topic}
                   className="px-5 py-2.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 hover:border-primary/40 hover:shadow-[0_0_20px_rgba(79,70,229,0.15)] text-on-surface-variant hover:text-white backdrop-blur-md transition-all duration-300 text-sm font-semibold flex items-center gap-2 hover:-translate-y-0.5"
-                  onClick={() => setInput(`Tell me about ${topic}`)}
+                  onClick={() => {
+                    handleInputChange({ target: { value: `Tell me about ${topic}` } } as any);
+                  }}
                 >
                   <span className="material-symbols-outlined text-[18px] text-primary">search</span>
                   {topic}
@@ -107,7 +62,7 @@ export default function ChatPage() {
 
           {/* Chat History */}
           <div className="flex flex-col gap-6">
-            {sampleMessages.map((msg) => (
+            {messages.map((msg) => (
               <div
                 key={msg.id}
                 className={`flex gap-4 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}
@@ -136,11 +91,6 @@ export default function ChatPage() {
                   }`}>
                     {msg.content}
                   </div>
-                  {msg.richContent && (
-                    <div className="w-full mt-3">
-                      {msg.richContent}
-                    </div>
-                  )}
                 </div>
               </div>
             ))}
@@ -183,31 +133,35 @@ export default function ChatPage() {
             </div>
 
             {/* Input Area */}
-            <div className="flex items-end gap-3 px-3 pb-2">
+            <form onSubmit={handleSubmit} className="flex items-end gap-3 px-3 pb-2">
               <textarea
                 value={input}
-                onChange={(e) => setInput(e.target.value)}
+                onChange={handleInputChange}
                 placeholder={`Ask ArcAI (${mode} mode)...`}
                 className="flex-1 bg-transparent border-none outline-none resize-none min-h-[48px] max-h-32 text-white placeholder:text-outline/50 py-3 px-2 text-sm md:text-base focus:ring-0 leading-relaxed font-medium"
                 rows={1}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
-                    if (input.trim()) setInput("");
+                    if (input.trim()) {
+                      const form = e.currentTarget.form;
+                      if (form) form.requestSubmit();
+                    }
                   }
                 }}
               />
               <button
+                type="submit"
                 className={`w-12 h-12 mb-1 rounded-2xl flex items-center justify-center transition-all duration-300 ${
-                  input.trim()
+                  input.trim() && !isLoading
                     ? "bg-primary/20 text-primary border border-primary/30 hover:bg-primary/30 shadow-[0_0_20px_rgba(79,70,229,0.15)] hover:shadow-[0_0_30px_rgba(79,70,229,0.25)] hover:-translate-y-0.5 active:scale-95"
                     : "bg-white/5 text-outline/50 cursor-not-allowed border border-white/5"
                 }`}
-                disabled={!input.trim()}
+                disabled={!input.trim() || isLoading}
               >
                 <span className="material-symbols-outlined text-[20px]">send</span>
               </button>
-            </div>
+            </form>
             
             {/* Subtle animated gradient line at bottom */}
             <div className="absolute bottom-0 left-0 h-[2px] w-full bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-focus-within:opacity-100 transition-opacity duration-700"></div>

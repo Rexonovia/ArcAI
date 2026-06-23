@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { useSession, signIn, signOut } from "next-auth/react";
 
 export default function Navbar() {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { data: session } = useSession();
 
   const navLinks = [
     { href: "/learn", label: "Learn" },
@@ -70,11 +72,31 @@ export default function Navbar() {
           >
             <span className="material-symbols-outlined text-2xl">{isMobileMenuOpen ? 'close' : 'menu'}</span>
           </button>
-          <div className="w-8 h-8 rounded-full border border-outline hidden md:flex items-center justify-center bg-surface-container-highest overflow-hidden hover:border-primary transition-colors duration-200">
-            <span className="material-symbols-outlined text-outline text-sm">
-              person
-            </span>
-          </div>
+          
+          {session ? (
+            <div className="hidden md:flex items-center gap-3">
+              <button 
+                onClick={() => signOut()}
+                className="text-on-surface-variant hover:text-on-surface text-sm font-medium transition-colors"
+              >
+                Sign Out
+              </button>
+              <div className="w-8 h-8 rounded-full border border-outline flex items-center justify-center bg-surface-container-highest overflow-hidden hover:border-primary transition-colors duration-200" title={session.user?.name || "User"}>
+                {session.user?.image ? (
+                  <img src={session.user.image} alt="Avatar" className="w-full h-full object-cover" />
+                ) : (
+                  <span className="material-symbols-outlined text-outline text-sm">person</span>
+                )}
+              </div>
+            </div>
+          ) : (
+            <button 
+              onClick={() => signIn()}
+              className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg bg-surface-container border border-outline hover:border-primary/50 hover:bg-surface-container-high transition-all duration-200 text-sm font-medium"
+            >
+              Sign In
+            </button>
+          )}
         </div>
       </nav>
 
@@ -107,18 +129,34 @@ export default function Navbar() {
           <div className="mt-auto flex flex-col gap-4 pb-8">
             <div className="flex items-center gap-3 p-4 bg-surface-container-high rounded-xl border border-outline-variant">
               <div className="w-10 h-10 rounded-full border border-outline flex items-center justify-center bg-surface-container-highest overflow-hidden">
-                <span className="material-symbols-outlined text-outline">
-                  person
-                </span>
+                {session?.user?.image ? (
+                  <img src={session.user.image} alt="Avatar" className="w-full h-full object-cover" />
+                ) : (
+                  <span className="material-symbols-outlined text-outline">
+                    person
+                  </span>
+                )}
               </div>
               <div>
-                <div className="text-on-surface font-medium">Guest User</div>
-                <div className="text-outline text-xs">Sign in to save progress</div>
+                <div className="text-on-surface font-medium">{session?.user?.name || "Guest User"}</div>
+                <div className="text-outline text-xs">{session ? "Logged in" : "Sign in to save progress"}</div>
               </div>
             </div>
-            <Link href="/learn" onClick={() => setIsMobileMenuOpen(false)} className="w-full bg-gradient-to-r from-primary-container to-secondary-container text-white p-4 rounded-xl font-label-md text-label-md hover:opacity-90 active:scale-[0.98] transition-all duration-200 shadow-lg flex justify-center">
-              Get Started
-            </Link>
+            {session ? (
+              <button 
+                onClick={() => signOut()}
+                className="w-full bg-surface-container text-on-surface p-4 rounded-xl font-label-md text-label-md hover:bg-surface-container-high transition-all duration-200 border border-outline-variant"
+              >
+                Sign Out
+              </button>
+            ) : (
+              <button 
+                onClick={() => signIn()}
+                className="w-full bg-gradient-to-r from-primary-container to-secondary-container text-white p-4 rounded-xl font-label-md text-label-md hover:opacity-90 active:scale-[0.98] transition-all duration-200 shadow-lg flex justify-center"
+              >
+                Sign In
+              </button>
+            )}
           </div>
         </div>
       )}

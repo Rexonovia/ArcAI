@@ -2,9 +2,26 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const { data: session } = useSession();
+  const [recentChats, setRecentChats] = useState<{ id: string; title: string; updatedAt: string }[]>([]);
+
+  useEffect(() => {
+    if (session) {
+      fetch("/api/chat/conversations")
+        .then((res) => res.json())
+        .then((data) => {
+          if (Array.isArray(data)) {
+            setRecentChats(data.slice(0, 5));
+          }
+        })
+        .catch(console.error);
+    }
+  }, [session]);
 
   const navItems = [
     { href: "/chat", icon: "smart_toy", label: "AI Tutor" },
@@ -13,11 +30,8 @@ export default function Sidebar() {
     { href: "/playground", icon: "tune", label: "Playground" },
   ];
 
-  const recentChats = [
-    { label: "Netflix CDN Architecture", time: "2 hours ago" },
-    { label: "Redis Caching Strategies", time: "Yesterday" },
-    { label: "Microservices vs Monolith", time: "3 days ago" },
-  ];
+  // Will be populated dynamically
+  // const recentChats = ...
 
   return (
     <aside className="hidden md:flex flex-col gap-base bg-surface-container-low text-secondary font-label-md text-label-md h-screen w-64 fixed left-0 top-0 pt-20 border-r border-white/10 z-40 shrink-0">
@@ -63,30 +77,36 @@ export default function Sidebar() {
           <div className="flex-1 border-t border-dashed border-outline-variant/40" />
         </div>
 
-        {recentChats.map((chat, i) => (
+        {recentChats.map((chat) => (
           <Link
-            key={i}
-            href="#"
+            key={chat.id}
+            href={`/chat?id=${chat.id}`}
             className="flex flex-col px-sm py-2.5 text-on-surface-variant hover:bg-surface-container-high rounded-lg mx-2 transition-all duration-200 group"
           >
             <span className="truncate w-full font-label-md text-on-surface group-hover:text-primary transition-colors">
-              {chat.label}
+              {chat.title}
             </span>
-            <span className="text-xs text-outline">{chat.time}</span>
+            <span className="text-xs text-outline">
+              {new Date(chat.updatedAt).toLocaleDateString()}
+            </span>
           </Link>
         ))}
       </nav>
 
       <div className="p-md border-t border-white/5 mt-auto bg-surface-container-lowest/50">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center overflow-hidden border border-white/10">
-            <span className="material-symbols-outlined text-outline">
-              person
-            </span>
+          <div className="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center overflow-hidden border border-white/10" title={session?.user?.name || "User"}>
+            {session?.user?.image ? (
+              <img src={session.user.image} alt="Avatar" className="w-full h-full object-cover" />
+            ) : (
+              <span className="material-symbols-outlined text-outline">
+                person
+              </span>
+            )}
           </div>
           <div>
-            <div className="text-on-surface font-label-md">Learning Path</div>
-            <div className="text-outline text-xs">Distributed Systems</div>
+            <div className="text-on-surface font-label-md truncate max-w-[120px]">{session?.user?.name || "Guest User"}</div>
+            <div className="text-outline text-xs">{session ? "Pro Member" : "Learning Path"}</div>
           </div>
         </div>
         <button className="w-full py-2.5 rounded-lg bg-gradient-to-r from-primary-container to-secondary-container text-white font-label-md flex items-center justify-center gap-2 hover:opacity-90 active:scale-[0.98] transition-all duration-200 shimmer relative overflow-hidden">

@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { useSession } from "next-auth/react";
 
 // --- Types ---
 type Position = { x: number; y: number };
@@ -59,8 +60,49 @@ export default function PlaygroundPage() {
   const [connections, setConnections] = useState<Connection[]>(INITIAL_CONNECTIONS);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [trafficVolume, setTrafficVolume] = useState<number>(50);
+  const [isSaving, setIsSaving] = useState(false);
   
   const canvasRef = useRef<HTMLDivElement>(null);
+  const { data: session } = useSession();
+
+  // Load saved playground state
+  useEffect(() => {
+    if (session) {
+      fetch("/api/playground")
+        .then((res) => {
+          if (!res.ok) throw new Error("Failed to load");
+          return res.json();
+        })
+        .then((data) => {
+          if (data && data.nodes && data.nodes.length > 0) {
+            setNodes(data.nodes);
+            setConnections(data.connections || []);
+          }
+        })
+        .catch(console.error);
+    }
+  }, [session]);
+
+  const handleSave = async () => {
+    if (!session) {
+      alert("Please sign in to save your playground state.");
+      return;
+    }
+    setIsSaving(true);
+    try {
+      await fetch("/api/playground", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nodes, connections }),
+      });
+      alert("Playground saved successfully!");
+    } catch (error) {
+      console.error(error);
+      alert("Failed to save playground.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   // --- Drag & Drop Handlers (Canvas) ---
   const handleDragOver = (e: React.DragEvent) => {
@@ -355,9 +397,13 @@ export default function PlaygroundPage() {
               <span className="material-symbols-outlined text-[18px] group-hover/run:animate-pulse">play_arrow</span>
               Run Test
             </button>
-            <button className="flex-1 flex items-center justify-center gap-1 bg-surface-container-high border border-outline-variant text-sm font-medium py-2 rounded hover:border-primary hover:shadow-md transition-all duration-200 active:scale-[0.97]">
+            <button 
+              onClick={handleSave}
+              disabled={isSaving}
+              className={`flex-1 flex items-center justify-center gap-1 bg-surface-container-high border border-outline-variant text-sm font-medium py-2 rounded hover:border-primary hover:shadow-md transition-all duration-200 active:scale-[0.97] ${isSaving ? "opacity-50 cursor-not-allowed" : ""}`}
+            >
               <span className="material-symbols-outlined text-[18px]">save</span>
-              Save State
+              {isSaving ? "Saving..." : "Save State"}
             </button>
           </div>
         </div>

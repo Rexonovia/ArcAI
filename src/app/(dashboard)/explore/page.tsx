@@ -1,43 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
+import { db } from "@/lib/db";
 
-// Mock data
-const architectures = [
-  {
-    id: 'netflix-cdn',
-    name: 'Netflix Open Connect',
-    description: 'Global content delivery network architecture optimized for streaming video at scale.',
-    pattern: 'CDN / Edge Computing',
-    technologies: ['FreeBSD', 'NGINX', 'BGP'],
-    icon: 'dns',
-  },
-  {
-    id: 'twitter-snowflake',
-    name: 'Twitter Snowflake',
-    description: 'Highly available, distributed unique ID generation service.',
-    pattern: 'Distributed Systems',
-    technologies: ['Scala', 'ZooKeeper', 'Thrift'],
-    icon: 'ac_unit',
-  },
-  {
-    id: 'uber-dispatch',
-    name: 'Uber Dispatch',
-    description: 'Real-time dispatch system matching drivers with riders using geospatial querying.',
-    pattern: 'Real-time / Geospatial',
-    technologies: ['Go', 'Node.js', 'Redis', 'Cassandra'],
-    icon: 'local_taxi',
-  },
-  {
-    id: 'whatsapp-messaging',
-    name: 'WhatsApp Messaging',
-    description: 'High-throughput, low-latency messaging architecture handling billions of messages.',
-    pattern: 'Message Broker',
-    technologies: ['Erlang', 'FreeBSD', 'Mnesia'],
-    icon: 'chat',
-  }
-];
-
-export default function ExplorePage() {
+export default async function ExplorePage() {
+  const architectures = await db.architecture.findMany({
+    where: { isPublished: true },
+    orderBy: { sortOrder: "asc" },
+  });
   return (
     <div className="flex flex-col gap-8 min-h-full p-6 md:p-8">
       {/* Header section */}
@@ -95,7 +64,7 @@ export default function ExplorePage() {
             
             <div className="mt-auto flex flex-col gap-5">
               <div className="flex flex-wrap gap-2">
-                {arch.technologies.map(tech => (
+                {(arch.technologies as string[] || []).map(tech => (
                   <span key={tech} className="text-xs font-mono text-tertiary bg-surface-container-highest border border-outline-variant px-2 py-1 rounded-md hover:bg-tertiary/10 transition-colors duration-200 cursor-default">
                     {tech}
                   </span>
@@ -103,7 +72,7 @@ export default function ExplorePage() {
               </div>
               
               <Link 
-                href={`/explore/${arch.id}`}
+                href={`/explore/${arch.slug}`}
                 className="flex items-center justify-center gap-2 w-full py-2.5 bg-surface-container-high hover:bg-surface-container-highest text-primary font-medium rounded-lg border border-outline-variant hover:border-primary transition-all duration-200 group/btn"
               >
                 <span>View Architecture</span>

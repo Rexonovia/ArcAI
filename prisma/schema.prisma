@@ -1,0 +1,242 @@
+// prisma/schema.prisma
+// ArcAI — System Design Learning Platform
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ────────────────────────────────────────────
+// Auth (NextAuth.js v5 / Prisma Adapter)
+// ────────────────────────────────────────────
+
+model User {
+  id             String    @id @default(cuid())
+  name           String?
+  email          String    @unique
+  emailVerified  DateTime?
+  image          String?
+  hashedPassword String?
+  role           String    @default("free") // free | pro | admin
+  xp             Int       @default(0)
+  streak         Int       @default(0)
+  lastActiveAt   DateTime  @default(now())
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  accounts          Account[]
+  sessions          Session[]
+  chatConversations ChatConversation[]
+  courseProgress    UserCourseProgress[]
+  moduleProgress   UserModuleProgress[]
+  playgroundStates PlaygroundState[]
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+// ────────────────────────────────────────────
+// Chat Domain
+// ────────────────────────────────────────────
+
+model ChatConversation {
+  id         String   @id @default(cuid())
+  userId     String
+  title      String   @default("New Chat")
+  mode       String   @default("Technical") // Beginner | Technical | PM
+  systemSlug String?  // optional: architecture context slug
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user     User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages ChatMessage[]
+
+  @@index([userId, updatedAt])
+}
+
+model ChatMessage {
+  id             String   @id @default(cuid())
+  conversationId String
+  role           String   // user | assistant
+  content        String
+  createdAt      DateTime @default(now())
+
+  conversation ChatConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId, createdAt])
+}
+
+// ────────────────────────────────────────────
+// Learning Domain
+// ────────────────────────────────────────────
+
+model Course {
+  id              String   @id @default(cuid())
+  slug            String   @unique
+  title           String
+  description     String
+  icon            String
+  level           String   // Beginner | Intermediate | Advanced | All Levels
+  color           String   @default("primary") // primary | secondary | tertiary
+  sortOrder       Int      @default(0)
+  isPublished     Boolean  @default(true)
+  conceptCount    Int      @default(0)
+  durationMinutes Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  modules  Module[]
+  progress UserCourseProgress[]
+}
+
+model Module {
+  id              String   @id @default(cuid())
+  courseId         String
+  slug            String
+  title           String
+  description     String
+  sortOrder       Int      @default(0)
+  durationMinutes Int      @default(10)
+  conceptCount    Int      @default(1)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  course   Course               @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  progress UserModuleProgress[]
+
+  @@unique([courseId, slug])
+  @@index([courseId, sortOrder])
+}
+
+model UserCourseProgress {
+  userId          String
+  courseId         String
+  progressPercent Int      @default(0) // 0–100
+  startedAt       DateTime @default(now())
+  completedAt     DateTime?
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@id([userId, courseId])
+}
+
+model UserModuleProgress {
+  userId      String
+  moduleId    String
+  status      String   @default("not_started") // not_started | in_progress | completed
+  score       Int?
+  completedAt DateTime?
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  module Module @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, moduleId])
+}
+
+// ────────────────────────────────────────────
+// Architecture Explorer Domain
+// ────────────────────────────────────────────
+
+model Architecture {
+  id           String   @id @default(cuid())
+  slug         String   @unique
+  name         String
+  description  String
+  pattern      String   // CDN / Edge Computing, Distributed Systems, etc.
+  icon         String
+  technologies String[] // array of tech names
+  isPublished  Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  nodes       ArchitectureNode[]
+  connections ArchitectureConnection[]
+}
+
+model ArchitectureNode {
+  id             String @id @default(cuid())
+  architectureId String
+  type           String // gateway | service | database | cache | queue
+  label          String
+  icon           String
+  positionX      Float
+  positionY      Float
+  details        Json?  // extensible metadata
+
+  architecture Architecture @relation(fields: [architectureId], references: [id], onDelete: Cascade)
+
+  @@index([architectureId])
+}
+
+model ArchitectureConnection {
+  id             String  @id @default(cuid())
+  architectureId String
+  sourceNodeId   String
+  targetNodeId   String
+  animated       Boolean @default(true)
+  label          String?
+
+  architecture Architecture @relation(fields: [architectureId], references: [id], onDelete: Cascade)
+
+  @@index([architectureId])
+}
+
+// ────────────────────────────────────────────
+// Playground Domain
+// ────────────────────────────────────────────
+
+model PlaygroundState {
+  id              String   @id @default(cuid())
+  userId          String
+  name            String   @default("Untitled")
+  nodesJson       Json     // serialized ArchitectureNode[]
+  connectionsJson Json     // serialized Connection[]
+  trafficVolume   Int      @default(50)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, updatedAt])
+}
